@@ -25,68 +25,43 @@ import com.example.zikrapp.R
 import com.example.zikrapp.ui.viewmodel.ControlsViewModel
 
 
-
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
-fun ActionRow(navController: NavController,
-              currentCount: Int, // Add this
-              totalCount: Int,
-              onResetClick: () -> Unit) {
+fun ActionRow(
+    navController: NavController,
+    currentCount: Int, // Add this
+    totalCount: Int,
+    onResetClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: ControlsViewModel = viewModel()
+) {
 
-
-
-
-    val navBackStackEntry = remember(navController) {
-        navController.getBackStackEntry("main")
-    }
-    val viewModel: ControlsViewModel = viewModel(navBackStackEntry)
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp,top = 16.dp),
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(64.dp),
-            shape = RoundedCornerShape(0.dp),
-            color = Color(0XFF1A1A1A), // Light purple background
-            shadowElevation = 0.dp // Shadow/elevation effect
-        ) {
+
+        CircleIconButton(
+            icon = painterResource(
+                id = if (uiState.islock)
+                    R.drawable.lock else R.drawable.unlock,
 
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Absolute.SpaceAround
-            ) {
+                ), onClick = { viewModel.toggleLock() })
+        ZikrCountStatus(currentCount, totalCount)
+        CircleIconButton(
+            icon = painterResource(id = R.drawable.reset),
+            onClick = {
 
-                CircleIconButton(
-                    Circlesize = 50.dp,
-                    Iconsize = 25.dp,
-                    icon = painterResource(
-                        id = if (uiState.islock)
-                            R.drawable.lock else R.drawable.unlock,
-
-
-                        ), onClick = { viewModel.toggleLock() })
-ZikrCountStatus(currentCount,totalCount)
-               CircleIconButton(
-                    Circlesize = 50.dp,
-                    Iconsize = 25.dp,
-                    icon = painterResource(id = R.drawable.reset),
-                    onClick = {
-
-                        onResetClick()
-                    })
-
-            }
-
-        }
+                onResetClick()
+            })
 
     }
+
 }
 
 

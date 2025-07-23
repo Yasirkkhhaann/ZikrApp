@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ZikrName(modifier: Modifier = Modifier) {
-    Text("Allah o Akbar", color = Color.White, fontSize = 16.sp,)
+    Text("Allah o Akbar", modifier = modifier ,color = Color.White,
+        fontSize = 16.sp,
+        textAlign = TextAlign.Center)
 }
 
 @Composable

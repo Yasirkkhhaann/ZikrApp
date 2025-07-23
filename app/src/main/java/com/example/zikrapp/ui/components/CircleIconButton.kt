@@ -14,14 +14,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CircleIconButton(icon: Painter, Circlesize: Dp = 65.dp,Iconsize: Dp = 31.dp, onClick: () -> Unit, IconColor: Color = Color.White, bgColor: Color = Color(0xFF363636)) {
+fun CircleIconButton(icon: Painter, onClick: () -> Unit, IconColor: Color = Color.White, bgColor: Color = Color(0xFF363636)) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
-            .size(Circlesize)
-            .background(bgColor, shape = CircleShape).padding(5.dp)
+            .size(50.dp)
+            .background(bgColor, shape = CircleShape)
     ) {
-        Icon(icon, contentDescription = null,tint = IconColor, modifier = Modifier.size(Iconsize))
+        Icon(icon, contentDescription = null,tint = IconColor, modifier = Modifier.size(25.dp))
     }
 }
 

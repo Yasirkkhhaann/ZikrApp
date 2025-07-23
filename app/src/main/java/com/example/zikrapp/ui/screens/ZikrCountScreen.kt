@@ -13,16 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.zikrapp.R
 import com.example.zikrapp.ui.components.ActionRow
-import com.example.zikrapp.ui.components.FloatingBottomBar
-import com.example.zikrapp.ui.components.FloatingTopBar
+import com.example.zikrapp.ui.components.BottomAppBar
+import com.example.zikrapp.ui.components.TopAppBar
 import com.example.zikrapp.ui.components.MainCounterCircle
 import com.example.zikrapp.ui.components.ZikrAlertDialog
-import com.example.zikrapp.ui.components.ZikrCountStatus
 import com.example.zikrapp.ui.components.ZikrName
 import com.example.zikrapp.ui.components.ZikrNote
 import com.example.zikrapp.ui.viewmodel.ControlsViewModel
@@ -38,25 +36,29 @@ fun ZikrCountScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 20.dp),
+            .padding(top = 40.dp, start = 30.dp, end = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        FloatingTopBar(navController = navController)
-        ZikrName()
+        TopAppBar(navController = navController, modifier = modifier.fillMaxWidth())
+        ZikrName(modifier = modifier.fillMaxWidth())
         ZikrNote(
             modifier = modifier
-                .padding(start = 20.dp, end = 20.dp, top = 5.dp)
                 .fillMaxWidth(),
         )
 
+        Spacer(Modifier.height(10.dp))
         ActionRow(
-            navController = navController, uiState.countCurrent, uiState.countTotal,
-            onResetClick = { viewModel.showResetConfirmationDialog() })
+            navController = navController, uiState.countCurrent,
+            uiState.countTotal,
+            onResetClick = { viewModel.showResetConfirmationDialog() },
+            modifier = modifier.fillMaxWidth()
+        )
         Spacer(Modifier.height(10.dp))
         MainCounterCircle(incrementCount = viewModel::incrementCount)
-        Spacer(Modifier.height(16.dp))
-        FloatingBottomBar(navController = navController)
+        Spacer(Modifier.weight(1f))
+        BottomAppBar(navController = navController, viewModel = viewModel,
+            modifier = modifier.fillMaxWidth().padding(bottom = 30.dp))
 
 
 
@@ -70,7 +72,7 @@ fun ZikrCountScreen(
                 },
                 dialogTitle = "Zikr Completed",
                 dialogText = "Now you want to restart or Cancel the Zikr?",
-icon = painterResource(id = R.drawable.complete2,),
+                icon = painterResource(id = R.drawable.complete2),
 
                 iconDescription = "Reset Icon",
                 color = Color.Green,
