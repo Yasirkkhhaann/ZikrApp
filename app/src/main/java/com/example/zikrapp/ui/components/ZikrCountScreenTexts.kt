@@ -10,31 +10,30 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-
-
-
+import com.example.zikrapp.ui.viewmodel.Zikr
+import kotlinx.coroutines.internal.OpDescriptor
 
 
 @Composable
-fun ZikrName(modifier: Modifier = Modifier) {
-    Text("Allah o Akbar", modifier = modifier ,color = Color.White,
+fun ZikrName(modifier: Modifier = Modifier,zikrName: String) {
+    Text(zikrName, modifier = modifier ,color = Color.White,
         fontSize = 16.sp,
         textAlign = TextAlign.Center)
 }
 
 @Composable
-fun ZikrNote(modifier: Modifier = Modifier) {
-    Text("Allah o Akbar Allah o Akbar Allah o Akbar Allah o Akbar Allah o Akbar Allah o Akbar",
-        modifier = modifier,color = Color.White, fontSize = 12.sp,
+fun ZikrNote(modifier: Modifier = Modifier,zikrDescription: String) {
+    Text(text =  zikrDescription,
+    modifier = modifier,color = Color.White, fontSize = 12.sp,
         lineHeight = 15.sp,
         fontStyle = FontStyle.Italic, fontWeight = FontWeight.Thin,
         textAlign = TextAlign.Center)
 }
 
 @Composable
-fun ZikrCountStatus(countCurrent: Int,countTotal: Int) {
+fun ZikrCountStatus(zikrStart: Int,zikrEnd: Int) {
 
-    Text("$countCurrent/$countTotal", color = Color.White, fontSize = 16.sp)
+    Text("${zikrStart}/${zikrEnd}", color = Color.White, fontSize = 16.sp)
 }
 
 

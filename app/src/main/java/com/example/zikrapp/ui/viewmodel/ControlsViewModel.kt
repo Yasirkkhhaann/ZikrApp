@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class ControlsViewModel : ViewModel() {
+class ZikrControlModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(ZikrUiState())
 
@@ -46,6 +46,10 @@ class ControlsViewModel : ViewModel() {
         )
         // Add your sound control logic here, e.g.:
         if (_uiState.value.isSpeakerOn) playSound() else stopSound()
+    }
+
+    fun loadZikrBounds(start: Int, end: Int) {
+        _uiState.update { it.copy(countCurrent = start, countTotal = end) }
     }
 
     fun incrementCount() {

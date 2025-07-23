@@ -31,25 +31,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.zikrapp.ui.components.FloatingActionButton
 import com.example.zikrapp.ui.components.ZikrListBanner
 import com.example.zikrapp.ui.components.ZikrListItemCard
 import com.example.zikrapp.ui.viewmodel.Zikr
-import com.example.zikrapp.ui.viewmodel.ZikrViewModel
+import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
 @Composable
-fun ZikrListScreen(navController: NavController,zkrViewModel: ZikrViewModel = viewModel()) {
+fun ZikrListScreen(onAdd: () -> Unit, onEdit: (Int) -> Unit,
+                   zikrDataModel: ZikrDataModel = viewModel(),
+                   changeZikr: (Int) -> Unit) {
 
 
-    val zikrList = zkrViewModel.zikrs
-
-    Log.d("ZikrListScreen", "ZikrList: $zikrList")
+    val zikrList = zikrDataModel.zikrs
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(ZikrScreen.ZikrEditAdd.name) },
+            FloatingActionButton(onClick = { onAdd() },
                 containerColor = Color(0xff3a3838), modifier = Modifier.padding(end = 10.dp,bottom = 10.dp)) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
@@ -74,7 +73,7 @@ fun ZikrListScreen(navController: NavController,zkrViewModel: ZikrViewModel = vi
                     items(it) {
 
                         Spacer(modifier = Modifier.height(10.dp))
-                        ZikrListItemCard(navController = navController, zikr = it,zkrViewModel)
+                        ZikrListItemCard(changeZikr, onEdit,zikr = it,zikrDataModel)
                     }
 
 
@@ -97,8 +96,8 @@ fun ZikrListScreen(navController: NavController,zkrViewModel: ZikrViewModel = vi
 
 
 
-@Preview
-@Composable
-fun ZikrListScreenPreview() {
-    ZikrListScreen(navController = NavController(LocalContext.current))
-}
+//@Preview
+//@Composable
+//fun ZikrListScreenPreview() {
+//    ZikrListScreen(navController = NavController(LocalContext.current))
+//}

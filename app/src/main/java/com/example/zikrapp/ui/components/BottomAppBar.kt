@@ -18,16 +18,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.zikrapp.R
-import com.example.zikrapp.ui.screens.ZikrScreen
-import com.example.zikrapp.ui.viewmodel.ControlsViewModel
+import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 
 
 @Composable
-fun BottomAppBar(modifier: Modifier = Modifier,navController: NavController,viewModel: ControlsViewModel = viewModel()) {
+fun BottomAppBar(modifier: Modifier = Modifier,onNavigateList: () -> Unit,zikrControlModel: ZikrControlModel = viewModel()) {
 
-            val uiState by viewModel.uiState.collectAsState()
+            val uiState by zikrControlModel.uiState.collectAsState()
 
             Row(
                 modifier = modifier,
@@ -39,18 +37,18 @@ fun BottomAppBar(modifier: Modifier = Modifier,navController: NavController,view
                         id = if (uiState.isSpeakerOn)
                             R.drawable.speakeron else R.drawable.speakeroff
                     ),
-                    onClick = { viewModel.toggleSpeaker() })
+                    onClick = { zikrControlModel.toggleSpeaker() })
 
                 CircleIconButton(
                     icon = painterResource(
                         id = if (uiState.isVibrationOn)
                             R.drawable.vibrationon else R.drawable.vibrationoff
                     ),
-                    onClick = { viewModel.toggleVibration() })
+                    onClick = { zikrControlModel.toggleVibration() })
 
                 CircleIconButton(
                     icon = painterResource(id = R.drawable.theme2),
-                    onClick = { navController.navigate(ZikrScreen.ZikrList.name)  })
+                    onClick = { onNavigateList()  })
             }
 
         }

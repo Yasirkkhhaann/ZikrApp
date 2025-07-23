@@ -24,7 +24,14 @@ val ZikrList: MutableList<Zikr> = mutableListOf(
         zikrDescription = "This Zikr is best after every prayer and before sleeping",
         zikrCountStart = 0,
         zikrCountEnd = 34
-    )
+    ),
+    Zikr(
+        zikrId = 0,
+        zikrName = "",
+        zikrDescription = "",
+        zikrCountStart = 0,
+        zikrCountEnd = 100
+    ),
 
 )
 

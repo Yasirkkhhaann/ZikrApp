@@ -20,23 +20,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.zikrapp.R
-import com.example.zikrapp.ui.viewmodel.ControlsViewModel
+import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun ActionRow(
-    navController: NavController,
     currentCount: Int, // Add this
     totalCount: Int,
     onResetClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ControlsViewModel = viewModel()
+    zikrControlModel: ZikrControlModel = viewModel()
 ) {
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by zikrControlModel.uiState.collectAsState()
 
 
     Row(
@@ -51,7 +49,7 @@ fun ActionRow(
                     R.drawable.lock else R.drawable.unlock,
 
 
-                ), onClick = { viewModel.toggleLock() })
+                ), onClick = { zikrControlModel.toggleLock() })
         ZikrCountStatus(currentCount, totalCount)
         CircleIconButton(
             icon = painterResource(id = R.drawable.reset),

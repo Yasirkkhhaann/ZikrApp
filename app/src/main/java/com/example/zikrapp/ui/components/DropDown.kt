@@ -40,14 +40,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.zikrapp.R
-import com.example.zikrapp.ui.screens.ZikrScreen
 import com.example.zikrapp.ui.viewmodel.Zikr
-import com.example.zikrapp.ui.viewmodel.ZikrViewModel
+import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
-fun DropdownMenuWithDetails(navController: NavController,zikrid: Int,zikrViewModel: ZikrViewModel= viewModel()) {
+fun DropdownMenuWithDetails(
+    changeZikr: (Int) -> Unit,onedit: (Int) -> Unit,zikrid: Int,zikrDataModel: ZikrDataModel= viewModel()) {
     var expanded by remember { mutableStateOf(false) }
 
 
@@ -77,13 +76,13 @@ fun DropdownMenuWithDetails(navController: NavController,zikrid: Int,zikrViewMod
                 text = { Text("Continue    " , style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.resource_continue), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { navController.navigate(ZikrScreen.ZikrCount.name) }
+                onClick = { changeZikr(zikrid) }
             )
             DropdownMenuItem(
                 text = { Text("Edit    ", style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.edit), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { navController.navigate("${ZikrScreen.ZikrEditAdd.name}?zikrId=$zikrid") }
+                onClick = { onedit(zikrid) }
             )
 
             // Second section
@@ -91,7 +90,7 @@ fun DropdownMenuWithDetails(navController: NavController,zikrid: Int,zikrViewMod
                 text = { Text("Delete    ", style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.delete), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { zikrViewModel.deleteZikr(zikrid) }
+                onClick = { zikrDataModel.deleteZikr(zikrid) }
             )
 
             // Third section

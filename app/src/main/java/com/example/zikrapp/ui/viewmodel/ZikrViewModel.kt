@@ -14,7 +14,7 @@ data class Zikr(
     val zikrCountEnd: Int
 )
 
-class ZikrViewModel : ViewModel() {
+class ZikrDataModel : ViewModel() {
     private val _zikrs = mutableStateListOf<Zikr>()
     val zikrs: List<Zikr> get() = _zikrs
 
@@ -23,6 +23,16 @@ class ZikrViewModel : ViewModel() {
     init {
         _zikrs.addAll(ZikrList)
     }
+
+
+    fun loadCurrentZikr(zikrId: Int): Zikr? {
+
+        val zikr =  zikrs.find { it.zikrId == zikrId }
+        Log.d("ZikrDataModel", "Loaded Zikr: $zikr")
+        return zikr
+    }
+
+
 
 
     fun addZikr(name: String, start: Int, end: Int, description: String) {

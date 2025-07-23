@@ -14,13 +14,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.zikrapp.R
-import com.example.zikrapp.ui.viewmodel.ControlsViewModel
+import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 
 
 @Composable
-fun TopAppBar(modifier: Modifier = Modifier,navController: NavController,viewModel: ControlsViewModel = viewModel()) {
+fun TopAppBar(modifier: Modifier = Modifier,zikrControlModel: ZikrControlModel = viewModel()) {
 
 
 
@@ -34,7 +33,7 @@ fun TopAppBar(modifier: Modifier = Modifier,navController: NavController,viewMod
                 icon = painterResource(id = R.drawable.list3),
 
                 IconColor = Color.White,
-                onClick = { viewModel.startThemLogic() })
+                onClick = { zikrControlModel.startThemLogic() })
             Text("Tasbeeh Counter", color = Color.White, fontSize = 16.sp)
             CircleIconButton(
                 icon = painterResource(id = R.drawable.save),

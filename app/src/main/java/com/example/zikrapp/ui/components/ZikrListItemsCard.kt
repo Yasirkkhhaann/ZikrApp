@@ -13,29 +13,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.example.zikrapp.R
 import com.example.zikrapp.ui.viewmodel.Zikr
-import com.example.zikrapp.ui.viewmodel.ZikrViewModel
+import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
 @Composable
-fun ZikrListItemCard(navController: NavController,zikr: Zikr,zkrViewModel: ZikrViewModel = viewModel()) {
+fun ZikrListItemCard(
+                     changeZikr: (Int) -> Unit,onEdit: (Int) -> Unit,zikr: Zikr,zikrDataModel: ZikrDataModel = viewModel()) {
 
     ElevatedCard(
         shape = RoundedCornerShape(14.dp),
@@ -146,7 +141,7 @@ fun ZikrListItemCard(navController: NavController,zikr: Zikr,zkrViewModel: ZikrV
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        DropdownMenuWithDetails(navController = navController,zikrid = zikr.zikrId,zkrViewModel)
+                        DropdownMenuWithDetails(changeZikr,onEdit,zikrid = zikr.zikrId, zikrDataModel = zikrDataModel)
 
                     }
                 }

@@ -16,17 +16,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.example.zikrapp.ui.viewmodel.ZikrViewModel
 
 import com.example.zikrapp.R
-import com.example.zikrapp.ui.screens.ZikrScreen
+import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
 fun ZikrEditAddScreen(
-    navController: NavController,
-    zikrViewModel: ZikrViewModel = viewModel(),
-    zikrId: Int
+    zikrDataModel: ZikrDataModel = viewModel(),
+    zikrId: Int,
+    onDone: () -> Unit,
+    onCancel: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -34,7 +33,7 @@ fun ZikrEditAddScreen(
     val isNew = zikrId == 0
 
     val zikr = if (!isNew) {
-        zikrViewModel.zikrs.find { it.zikrId == zikrId }
+        zikrDataModel.zikrs.find { it.zikrId == zikrId }
     } else null
 
     var zikrName by remember { mutableStateOf(zikr?.zikrName ?: "") }
@@ -137,7 +136,9 @@ fun ZikrEditAddScreen(
                 painter = painterResource(id = R.drawable.cancel),
                 contentDescription = "Cancel",
                 modifier = Modifier.size(50.dp).clickable {
-                    navController.navigate(ZikrScreen.ZikrList.name)
+
+                    onCancel() // Navigate back to the list screen
+
                 }
             )
             // Done button
@@ -162,14 +163,15 @@ fun ZikrEditAddScreen(
                     }
 
                     if(isNew){
-                        zikrViewModel.addZikr(zikrName, start, end, zikrDescription)
+                        zikrDataModel.addZikr(zikrName, start, end, zikrDescription)
                         Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
                     } else {
-                        zikrViewModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)
+                        zikrDataModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)
                         Toast.makeText(context, "Zikr updated!", Toast.LENGTH_SHORT).show()
                     }
 
-                    navController.navigate(ZikrScreen.ZikrList.name)
+                    onDone() // Navigate back to the list screen
+
                 }
             )
         }
