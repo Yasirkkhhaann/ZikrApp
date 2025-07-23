@@ -52,7 +52,8 @@ fun ZikrCountScreen(
             navController = navController, uiState.countCurrent,
             uiState.countTotal,
             onResetClick = { viewModel.showResetConfirmationDialog() },
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth(),
+            viewModel = viewModel
         )
         Spacer(Modifier.height(10.dp))
         MainCounterCircle(incrementCount = viewModel::incrementCount)
