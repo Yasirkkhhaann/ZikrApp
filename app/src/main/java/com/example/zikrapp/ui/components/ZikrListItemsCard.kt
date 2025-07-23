@@ -30,7 +30,7 @@ import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
 fun ZikrListItemCard(
-                     changeZikr: (Int) -> Unit,onEdit: (Int) -> Unit,zikr: Zikr,zikrDataModel: ZikrDataModel = viewModel()) {
+                     onChangeZikr: (Int) -> Unit,onEditZikr: (Int) -> Unit,zikr: Zikr,zikrDataModel: ZikrDataModel = viewModel()) {
 
     ElevatedCard(
         shape = RoundedCornerShape(14.dp),
@@ -141,7 +141,7 @@ fun ZikrListItemCard(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        DropdownMenuWithDetails(changeZikr,onEdit,zikrid = zikr.zikrId, zikrDataModel = zikrDataModel)
+                        DropdownMenuWithDetails(onChangeZikr,onEditZikr,zikrid = zikr.zikrId, zikrDataModel = zikrDataModel)
 
                     }
                 }

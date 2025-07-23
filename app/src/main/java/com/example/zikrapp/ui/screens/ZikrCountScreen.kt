@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,6 +32,12 @@ import com.example.zikrapp.ui.viewmodel.Zikr
 import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
+
+
+
+
+
+
 @Composable
 fun ZikrCountScreen(
     modifier: Modifier = Modifier,
@@ -45,8 +52,6 @@ fun ZikrCountScreen(
     val zikrLastid = currentZikrId
 
 
-
-
     val currentZikr =  zikrDataModel.loadCurrentZikr(zikrLastid)
 
     var zikrName by remember { mutableStateOf(currentZikr?.zikrName ?: "") }
@@ -58,6 +63,9 @@ fun ZikrCountScreen(
 
     LaunchedEffect(currentZikrId) {
         zikrControlModel.loadZikrBounds(zikrStart, zikrEnd)
+
+
+
     }
     
     Column(

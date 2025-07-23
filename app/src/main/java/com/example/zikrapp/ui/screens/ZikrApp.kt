@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface ZikrRoute {
     @Serializable
-    object ZikrCount : ZikrRoute
+    data class ZikrCount(val zikrId: Int = 0) : ZikrRoute
     @Serializable
     object ZikrList : ZikrRoute
     @Serializable
@@ -44,7 +44,7 @@ sealed interface ZikrRoute {
 
 @Composable
 fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: ZikrDataModel = viewModel()) {
-    val backStack = remember { mutableStateListOf<ZikrRoute>(ZikrRoute.ZikrCount) }
+    val backStack = remember { mutableStateListOf<ZikrRoute>(ZikrRoute.ZikrCount()) }
     val context = LocalContext.current
     fun navigate(to: ZikrRoute) = backStack.add(to)
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -55,10 +55,17 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
             is ZikrRoute.ZikrList -> {
                 // Replace ZikrList with ZikrCount
                 backStack.removeLast()
-                backStack.add(ZikrRoute.ZikrCount)
+                val previousZikrId = if (backStack.lastOrNull() is ZikrRoute.ZikrCount) {
+                    (backStack.last() as ZikrRoute.ZikrCount).zikrId
+                } else {
+                    0 // Default to zikrId = 0 if unknown
+                }
+
+                backStack.add(ZikrRoute.ZikrCount(previousZikrId))
             }
 
             is ZikrRoute.ZikrCount -> {
+                backStack.clear()
                 val activity = context as? ComponentActivity
                 activity?.finish() // Closes the app
             }
@@ -74,22 +81,23 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
             onBack = { goBack() },
             entryProvider = { route ->
                 when (route) {
-                    ZikrRoute.ZikrCount -> NavEntry(route) {
+                    is ZikrRoute.ZikrCount -> NavEntry(route) {
                         ZikrCountScreen(
                             onNavigateList = { navigate(ZikrRoute.ZikrList) },
                             modifier = Modifier,
                             zikrDataModel = zikrDataModel,
                             zikrControlModel = zikrControlModel,
-                            currentZikrId = 1
+                            currentZikrId = route.zikrId
 
                         )
                     }
                     ZikrRoute.ZikrList -> NavEntry(route) {
                         ZikrListScreen(
-                            onAdd = { navigate(ZikrRoute.ZikrEditAdd(0)) },
-                            onEdit = { id -> navigate(ZikrRoute.ZikrEditAdd(id)) },
+                            onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(0)) },
+                            onEditZikr = { id -> navigate(ZikrRoute.ZikrEditAdd(id)) },
+                            onChangeZikr = { id -> navigate(ZikrRoute.ZikrCount(id)) },
                             zikrDataModel = zikrDataModel,
-                            changeZikr = { id -> navigate(ZikrRoute.ZikrEditAdd(id)) }
+
                         )
                     }
                     is ZikrRoute.ZikrEditAdd -> NavEntry(route) {

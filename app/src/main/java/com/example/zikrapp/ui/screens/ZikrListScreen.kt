@@ -39,16 +39,17 @@ import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
 @Composable
-fun ZikrListScreen(onAdd: () -> Unit, onEdit: (Int) -> Unit,
+fun ZikrListScreen(onAddZikr: () -> Unit, onEditZikr: (Int) -> Unit,
+                   onChangeZikr: (Int) -> Unit,
                    zikrDataModel: ZikrDataModel = viewModel(),
-                   changeZikr: (Int) -> Unit) {
+                   ) {
 
 
     val zikrList = zikrDataModel.zikrs
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { onAdd() },
+            FloatingActionButton(onClick = { onAddZikr() },
                 containerColor = Color(0xff3a3838), modifier = Modifier.padding(end = 10.dp,bottom = 10.dp)) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
@@ -73,7 +74,7 @@ fun ZikrListScreen(onAdd: () -> Unit, onEdit: (Int) -> Unit,
                     items(it) {
 
                         Spacer(modifier = Modifier.height(10.dp))
-                        ZikrListItemCard(changeZikr, onEdit,zikr = it,zikrDataModel)
+                        ZikrListItemCard(onChangeZikr, onEditZikr,zikr = it,zikrDataModel)
                     }
 
 

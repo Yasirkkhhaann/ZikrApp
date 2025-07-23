@@ -46,7 +46,7 @@ import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
 fun DropdownMenuWithDetails(
-    changeZikr: (Int) -> Unit,onedit: (Int) -> Unit,zikrid: Int,zikrDataModel: ZikrDataModel= viewModel()) {
+    onChangeZikr: (Int) -> Unit,onEditZikr: (Int) -> Unit,zikrid: Int,zikrDataModel: ZikrDataModel= viewModel()) {
     var expanded by remember { mutableStateOf(false) }
 
 
@@ -76,13 +76,13 @@ fun DropdownMenuWithDetails(
                 text = { Text("Continue    " , style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.resource_continue), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { changeZikr(zikrid) }
+                onClick = { onChangeZikr(zikrid) }
             )
             DropdownMenuItem(
                 text = { Text("Edit    ", style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.edit), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { onedit(zikrid) }
+                onClick = { onEditZikr(zikrid) }
             )
 
             // Second section
