@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
+    id("com.google.devtools.ksp")
+
 
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
@@ -41,13 +43,24 @@ android {
 
 dependencies {
 
-    val lifecycle_version = "2.9.2"
+
+    implementation(libs.androidx.room.runtime)
+
+    ksp(libs.androidx.room.compiler)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // For Hilt Navigation Compose
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:${lifecycle_version}")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -62,6 +75,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.kotlinx.coroutines.android)
 
 
 

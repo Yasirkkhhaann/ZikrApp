@@ -41,7 +41,6 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
-import com.example.zikrapp.ui.viewmodel.Zikr
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable

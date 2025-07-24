@@ -3,16 +3,13 @@ package com.example.zikrapp.ui.viewmodel
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.data.ZikrList
 
 
-data class Zikr(
-    val zikrId: Int,
-    val zikrName: String,
-    val zikrDescription: String,
-    val zikrCountStart: Int,
-    val zikrCountEnd: Int
-)
+
+
+
 
 class ZikrDataModel : ViewModel() {
     private val _zikrs = mutableStateListOf<Zikr>()
@@ -31,6 +28,12 @@ class ZikrDataModel : ViewModel() {
         Log.d("ZikrDataModel", "Loaded Zikr: $zikr")
         return zikr
     }
+
+    fun getAllZikr(){
+
+    }
+
+
 
 
 

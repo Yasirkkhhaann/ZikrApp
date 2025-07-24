@@ -28,7 +28,6 @@ import com.example.zikrapp.ui.components.MainCounterCircle
 import com.example.zikrapp.ui.components.ZikrAlertDialog
 import com.example.zikrapp.ui.components.ZikrName
 import com.example.zikrapp.ui.components.ZikrNote
-import com.example.zikrapp.ui.viewmodel.Zikr
 import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 

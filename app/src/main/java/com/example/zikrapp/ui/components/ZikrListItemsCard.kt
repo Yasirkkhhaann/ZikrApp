@@ -24,13 +24,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.zikrapp.ui.viewmodel.Zikr
+import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
 @Composable
 fun ZikrListItemCard(
-                     onChangeZikr: (Int) -> Unit,onEditZikr: (Int) -> Unit,zikr: Zikr,zikrDataModel: ZikrDataModel = viewModel()) {
+    onChangeZikr: (Int) -> Unit, onEditZikr: (Int) -> Unit, zikr: Zikr, zikrDataModel: ZikrDataModel = viewModel()) {
 
     ElevatedCard(
         shape = RoundedCornerShape(14.dp),

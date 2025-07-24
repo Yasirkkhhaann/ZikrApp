@@ -10,8 +10,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.zikrapp.ui.viewmodel.Zikr
-import kotlinx.coroutines.internal.OpDescriptor
 
 
 @Composable
