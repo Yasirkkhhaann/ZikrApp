@@ -41,11 +41,12 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
+import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
 fun DropdownMenuWithDetails(
-    onChangeZikr: (Int) -> Unit,onEditZikr: (Int) -> Unit,zikrid: Int,zikrDataModel: ZikrDataModel= viewModel()) {
+    onChangeZikr: (Int) -> Unit,onEditZikr: (Int) -> Unit,zikrid: Int,dataBaseViewModel: DataBaseViewModel = viewModel()) {
     var expanded by remember { mutableStateOf(false) }
 
 
@@ -89,7 +90,7 @@ fun DropdownMenuWithDetails(
                 text = { Text("Delete    ", style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.delete), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { zikrDataModel.deleteZikr(zikrid) }
+                onClick = { dataBaseViewModel.deleteZikr(zikrid) }
             )
 
             // Third section
@@ -105,136 +106,3 @@ fun DropdownMenuWithDetails(
 
 
 
-
-
-@Composable
-fun CenteredDropdownMenu() {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
-        IconButton(onClick = { expanded = true }) {
-            Icon(
-                painter = painterResource(id = R.drawable.dropdown),
-                tint = Color.White,
-                contentDescription = "More options",
-                modifier = Modifier.size(31.dp)
-            )
-        }
-
-        if (expanded) {
-            Popup(
-                alignment = Alignment.Center,
-                onDismissRequest = { expanded = false },
-                properties = PopupProperties(focusable = true)
-            ) {
-                Surface(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .wrapContentHeight()
-                        .background(Color.Blue),
-                    shape = MaterialTheme.shapes.medium,
-                    tonalElevation = 8.dp
-                ) {
-                    Column {
-                        DropdownMenuItem(
-                            text = { Text("Profile", color = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Settings", color = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Send Feedback", color = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("About", color = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Help", color = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-
-@Composable
-fun DropdownMenuWithDetails2() {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.TopStart
-    ) {
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(
-                painter = painterResource(id = R.drawable.dropdown),
-                tint = Color.White,
-                contentDescription = "Drop down icon",
-                modifier = Modifier.size(31.dp)
-            )
-        }
-
-        if (expanded) {
-            Popup(
-                alignment = Alignment.Center,
-                onDismissRequest = { expanded = false },
-                properties = PopupProperties(focusable = true)
-            ) {
-                Surface(
-                    modifier = Modifier
-                        .width(250.dp)
-                        .wrapContentHeight()
-                        .background(Color(0xFF262626)),
-                    shape = MaterialTheme.shapes.medium,
-                    tonalElevation = 8.dp
-                ) {
-                    Column(
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Continue", color = Color.White) },
-                            leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = null, tint = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Settings", color = Color.White) },
-                            leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null, tint = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Send Feedback", color = Color.White) },
-                            leadingIcon = { Icon(Icons.Outlined.Feedback, contentDescription = null, tint = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("About", color = Color.White) },
-                            leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null, tint = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Help", color = Color.White) },
-                            leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Help, contentDescription = null, tint = Color.White) },
-                            onClick = { expanded = false }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-
-//@Preview
-//@Composable
-//fun DropdownMenuWithDetailsPreview() {
-//    DropdownMenuWithDetails()
-//}

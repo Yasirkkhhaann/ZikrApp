@@ -17,6 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.ui.components.ZikrListBanner
 import com.example.zikrapp.ui.components.ZikrListItemCard
+import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
@@ -33,10 +36,11 @@ import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 fun ZikrListScreen(onAddZikr: () -> Unit, onEditZikr: (Int) -> Unit,
                    onChangeZikr: (Int) -> Unit,
                    zikrDataModel: ZikrDataModel = viewModel(),
+                   dbZikrDataModel: DataBaseViewModel = viewModel()
                    ) {
 
 
-    val zikrList = zikrDataModel.zikrs
+    val zikrList by dbZikrDataModel.zikrlist.observeAsState(emptyList())
 
     Scaffold(
         floatingActionButton = {
@@ -62,10 +66,11 @@ fun ZikrListScreen(onAddZikr: () -> Unit, onEditZikr: (Int) -> Unit,
                     modifier = Modifier.height(425.dp),
                     contentPadding = PaddingValues(bottom = 30.dp)
                 ) {
-                    items(it) {
+                    items(zikrList.size) { it
+                        val zikr = zikrList[it]
 
                         Spacer(modifier = Modifier.height(10.dp))
-                        ZikrListItemCard(onChangeZikr, onEditZikr,zikr = it,zikrDataModel)
+                        ZikrListItemCard(onChangeZikr, onEditZikr,zikr = zikr,dbZikrDataModel)
                     }
 
 

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.data.ZikrDao
 
-@Database(entities = [Zikr::class], version = 1)
+@Database(entities = [Zikr::class], version = 2)
 abstract class ZikrDatabase : RoomDatabase() {
 
     companion object {

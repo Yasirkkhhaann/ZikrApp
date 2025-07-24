@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
+import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 import kotlinx.serialization.Serializable
@@ -29,7 +30,7 @@ sealed interface ZikrRoute {
     @Serializable
     object ZikrList : ZikrRoute
     @Serializable
-    data class ZikrEditAdd(val zikrId: Int = 0) : ZikrRoute
+    data class ZikrEditAdd(val zikrId: Int = 1) : ZikrRoute
 }
 //
 //
@@ -43,7 +44,8 @@ sealed interface ZikrRoute {
 
 
 @Composable
-fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: ZikrDataModel = viewModel()) {
+fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: ZikrDataModel = viewModel(),
+            dataBaseViewModel: DataBaseViewModel = viewModel()) {
     val backStack = remember { mutableStateListOf<ZikrRoute>(ZikrRoute.ZikrCount()) }
     val context = LocalContext.current
     fun navigate(to: ZikrRoute) = backStack.add(to)
@@ -93,7 +95,7 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
                     }
                     ZikrRoute.ZikrList -> NavEntry(route) {
                         ZikrListScreen(
-                            onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(0)) },
+                            onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(1)) },
                             onEditZikr = { id -> navigate(ZikrRoute.ZikrEditAdd(id)) },
                             onChangeZikr = { id -> navigate(ZikrRoute.ZikrCount(id)) },
                             zikrDataModel = zikrDataModel,
@@ -103,7 +105,7 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
                     is ZikrRoute.ZikrEditAdd -> NavEntry(route) {
                         ZikrEditAddScreen(
                             zikrId = route.zikrId,
-                            zikrDataModel = zikrDataModel,
+                            zikrDataModel = dataBaseViewModel,
                             onDone = { navigate(ZikrRoute.ZikrList) },
                             onCancel = { navigate(ZikrRoute.ZikrList) }
                         )

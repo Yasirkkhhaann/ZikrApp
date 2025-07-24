@@ -18,11 +18,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.zikrapp.R
+import com.example.zikrapp.data.Zikr
+import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
 fun ZikrEditAddScreen(
-    zikrDataModel: ZikrDataModel = viewModel(),
+    zikrDataModel: DataBaseViewModel = viewModel(),
     zikrId: Int,
     onDone: () -> Unit,
     onCancel: () -> Unit
@@ -33,7 +35,7 @@ fun ZikrEditAddScreen(
     val isNew = zikrId == 0
 
     val zikr = if (!isNew) {
-        zikrDataModel.zikrs.find { it.zikrId == zikrId }
+        zikrDataModel.getZikrById(zikrId)
     } else null
 
     var zikrName by remember { mutableStateOf(zikr?.zikrName ?: "") }
@@ -163,7 +165,7 @@ fun ZikrEditAddScreen(
                     }
 
                     if(isNew){
-                        zikrDataModel.addZikr(zikrName, start, end, zikrDescription)
+                        zikrDataModel.addZikr(Zikr(zikrId,zikrName, zikrDescription,start, end, ))
                         Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
                     } else {
                         zikrDataModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)

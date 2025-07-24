@@ -25,12 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.data.Zikr
+import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
 @Composable
 fun ZikrListItemCard(
-    onChangeZikr: (Int) -> Unit, onEditZikr: (Int) -> Unit, zikr: Zikr, zikrDataModel: ZikrDataModel = viewModel()) {
+    onChangeZikr: (Int) -> Unit, onEditZikr: (Int) -> Unit, zikr: Zikr, dataBaseViewModel: DataBaseViewModel = viewModel()) {
 
     ElevatedCard(
         shape = RoundedCornerShape(14.dp),
@@ -141,7 +142,7 @@ fun ZikrListItemCard(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        DropdownMenuWithDetails(onChangeZikr,onEditZikr,zikrid = zikr.zikrId, zikrDataModel = zikrDataModel)
+                        DropdownMenuWithDetails(onChangeZikr,onEditZikr,zikrid = zikr.zikrId, dataBaseViewModel = dataBaseViewModel)
 
                     }
                 }
