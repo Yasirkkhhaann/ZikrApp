@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
+import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.ui.components.ActionRow
 import com.example.zikrapp.ui.components.BottomAppBar
 import com.example.zikrapp.ui.components.TopAppBar
@@ -28,6 +29,7 @@ import com.example.zikrapp.ui.components.MainCounterCircle
 import com.example.zikrapp.ui.components.ZikrAlertDialog
 import com.example.zikrapp.ui.components.ZikrName
 import com.example.zikrapp.ui.components.ZikrNote
+import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
@@ -43,29 +45,25 @@ fun ZikrCountScreen(
     onNavigateList: () -> Unit,
     zikrControlModel: ZikrControlModel = viewModel(),
     zikrDataModel: ZikrDataModel = viewModel(),
-    currentZikrId: Int
+    databaseViewModel: DataBaseViewModel = viewModel(),
+    zikrId: Int
     
 ) {
     val uiState by zikrControlModel.uiState.collectAsState()
 
-    val zikrLastid = currentZikrId
-
-
-    val currentZikr =  zikrDataModel.loadCurrentZikr(zikrLastid)
-
-    var zikrName by remember { mutableStateOf(currentZikr?.zikrName ?: "") }
-    val zikrStart = currentZikr?.zikrCountStart ?: 0
-    val zikrEnd = currentZikr?.zikrCountEnd ?: 100
-    var zikrDescription by remember { mutableStateOf(currentZikr?.zikrDescription ?: "") }
+    var zikr by remember { mutableStateOf<Zikr?>(null) }
 
 
 
-    LaunchedEffect(currentZikrId) {
-        zikrControlModel.loadZikrBounds(zikrStart, zikrEnd)
-
-
-
+    LaunchedEffect(zikrId) {
+        zikr = databaseViewModel.getZikrById(zikrId)
     }
+
+    var zikrName by remember { mutableStateOf(zikr?.zikrName ?: "") }
+    val zikrStart = zikr?.zikrCountStart ?: 0
+    val zikrEnd = zikr?.zikrCountEnd ?: 100
+    var zikrDescription by remember { mutableStateOf(zikr?.zikrDescription ?: "") }
+
     
     Column(
         modifier = modifier

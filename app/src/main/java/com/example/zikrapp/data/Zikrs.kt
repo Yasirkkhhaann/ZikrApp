@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "zikr_table")
 data class Zikr(
 
-    @PrimaryKey(autoGenerate = true) val zikrId: Int = 0,
+    @PrimaryKey(autoGenerate = true) val zikrId: Int,
     val zikrName: String,
     val zikrDescription: String,
     val zikrCountStart: Int,

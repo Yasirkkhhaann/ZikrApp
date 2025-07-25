@@ -19,8 +19,19 @@ interface ZikrDao {
     @Query("DELETE FROM zikr_table WHERE zikrId = :zikrId")
     fun deleteZikr(zikrId: Int)
 
-    @Query("UPDATE zikr_table SET zikrId = :zikrId, zikrName = :zikrName,zikrCountStart = :zikrCountStart,zikrCountEnd = :zikrCountEnd,zikrDescription = :zikrDescription WHERE zikrId = :zikrId")
-    fun updateZikr(zikrId:Int,zikrName:String,zikrCountStart:Int,zikrCountEnd:Int,zikrDescription:String){
-
-    }
+    @Query("""
+    UPDATE zikr_table 
+    SET zikrName = :zikrName, 
+        zikrCountStart = :Start, 
+        zikrCountEnd = :End, 
+        zikrDescription = :zikrDescription 
+    WHERE zikrId = :zikrId
+""")
+    suspend fun updateZikr(
+        zikrId: Int,
+        zikrName: String,
+        Start: Int,
+        End: Int,
+        zikrDescription: String
+    )
 }

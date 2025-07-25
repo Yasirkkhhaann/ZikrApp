@@ -87,25 +87,23 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
                         ZikrCountScreen(
                             onNavigateList = { navigate(ZikrRoute.ZikrList) },
                             modifier = Modifier,
-                            zikrDataModel = zikrDataModel,
                             zikrControlModel = zikrControlModel,
-                            currentZikrId = route.zikrId
+                            zikrId = route.zikrId,
+                            databaseViewModel = dataBaseViewModel
 
                         )
                     }
                     ZikrRoute.ZikrList -> NavEntry(route) {
                         ZikrListScreen(
-                            onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(1)) },
+                            onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(0)) },
                             onEditZikr = { id -> navigate(ZikrRoute.ZikrEditAdd(id)) },
                             onChangeZikr = { id -> navigate(ZikrRoute.ZikrCount(id)) },
-                            zikrDataModel = zikrDataModel,
 
                         )
                     }
                     is ZikrRoute.ZikrEditAdd -> NavEntry(route) {
                         ZikrEditAddScreen(
                             zikrId = route.zikrId,
-                            zikrDataModel = dataBaseViewModel,
                             onDone = { navigate(ZikrRoute.ZikrList) },
                             onCancel = { navigate(ZikrRoute.ZikrList) }
                         )

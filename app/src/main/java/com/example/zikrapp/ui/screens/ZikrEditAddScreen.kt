@@ -24,25 +24,30 @@ import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
 fun ZikrEditAddScreen(
-    zikrDataModel: DataBaseViewModel = viewModel(),
     zikrId: Int,
     onDone: () -> Unit,
     onCancel: () -> Unit
 ) {
     val context = LocalContext.current
 
-    // Load zikr by ID from ViewModel
-    val isNew = zikrId == 0
+    val zikrDataModel: DataBaseViewModel = viewModel()
+    var zikr by remember { mutableStateOf<Zikr?>(null) }
 
-    val zikr = if (!isNew) {
-        zikrDataModel.getZikrById(zikrId)
-    } else null
+    LaunchedEffect(zikrId) {
+        zikr = if (zikrId == 0) null else zikrDataModel.getZikrById(zikrId)
+    }
 
-    var zikrName by remember { mutableStateOf(zikr?.zikrName ?: "") }
-    var zikrStart by remember { mutableStateOf(zikr?.zikrCountStart?.toString() ?: "") }
-    var zikrEnd by remember { mutableStateOf(zikr?.zikrCountEnd?.toString() ?: "") }
-    var zikrDescription by remember { mutableStateOf(zikr?.zikrDescription ?: "") }
+    var zikrName by remember { mutableStateOf("") }
+    var zikrStart by remember { mutableStateOf("") }
+    var zikrEnd by remember { mutableStateOf("") }
+    var zikrDescription by remember { mutableStateOf("") }
 
+    LaunchedEffect(zikr) {
+        zikrName = zikr?.zikrName ?: ""
+        zikrStart = zikr?.zikrCountStart?.toString() ?: ""
+        zikrEnd = zikr?.zikrCountEnd?.toString() ?: ""
+        zikrDescription = zikr?.zikrDescription ?: ""
+    }
     val zikrNameLimit = 25
     val zikrStartLimit = 9
     val zikrEndLimit = 9
@@ -164,7 +169,7 @@ fun ZikrEditAddScreen(
                         return@clickable
                     }
 
-                    if(isNew){
+                    if(zikrId == 0){
                         zikrDataModel.addZikr(Zikr(zikrId,zikrName, zikrDescription,start, end, ))
                         Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
                     } else {

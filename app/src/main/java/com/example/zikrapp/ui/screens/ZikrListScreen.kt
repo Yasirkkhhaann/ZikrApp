@@ -35,7 +35,6 @@ import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 @Composable
 fun ZikrListScreen(onAddZikr: () -> Unit, onEditZikr: (Int) -> Unit,
                    onChangeZikr: (Int) -> Unit,
-                   zikrDataModel: ZikrDataModel = viewModel(),
                    dbZikrDataModel: DataBaseViewModel = viewModel()
                    ) {
 

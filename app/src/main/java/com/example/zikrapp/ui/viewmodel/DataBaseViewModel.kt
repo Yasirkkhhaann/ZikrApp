@@ -10,6 +10,7 @@ import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.data.ZikrDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DataBaseViewModel : ViewModel() {
 
@@ -25,12 +26,8 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-    fun getZikrById(id: Int): Zikr? {
-        viewModelScope.launch(Dispatchers.IO) {
-
-
-        }
-        return ZikrDao.getZikrById(id)
+    suspend fun getZikrById(id: Int): Zikr? = withContext(Dispatchers.IO) {
+        ZikrDao.getZikrById(id)
     }
 
 
@@ -45,14 +42,14 @@ class DataBaseViewModel : ViewModel() {
     fun updateZikr(
         zikrId: Int,
         zikrName: String,
-        zikrCountStart: Int,
-        zikrCountEnd: Int,
+        Start: Int,
+        End: Int,
         zikrDescription: String
     ) {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            ZikrDao.updateZikr(zikrId, zikrName, zikrCountStart, zikrCountEnd, zikrDescription)
+            ZikrDao.updateZikr(zikrId, zikrName, Start, End, zikrDescription)
 
         }
     }
