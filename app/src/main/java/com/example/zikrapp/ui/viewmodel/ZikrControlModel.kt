@@ -46,18 +46,26 @@ class ZikrControlModel : ViewModel() {
     }
 
     fun loadZikrBounds(start: Int, end: Int) {
-        _uiState.update { it.copy(countCurrent = start, countTotal = end) }
+        _uiState.update { it.copy(start = start, end = end) }
     }
 
     fun incrementCount() {
 
-       if(_uiState.value.countCurrent < _uiState.value.countTotal){
+       if(_uiState.value.start < _uiState.value.end){
            _uiState.update {
                it.copy(
-                   countCurrent = it.countCurrent + 1
+                   start = it.start + 1
                )
            }
        }
+        else if(_uiState.value.end == 0){
+           _uiState.update {
+               it.copy(
+                   start = it.start + 1
+
+               )
+           }
+        }
 
         else{
            showZikrCompletedDialog()
@@ -95,7 +103,7 @@ class ZikrControlModel : ViewModel() {
     fun restartZikrAfterCompletion(){
         _uiState.update {
             it.copy(
-                countCurrent = 0,
+                start = 0,
                 showZikrCompletedDialog = false
 
             )
@@ -113,7 +121,7 @@ class ZikrControlModel : ViewModel() {
     fun confirmAndResetZikr() {
         _uiState.update {
             it.copy(
-                countCurrent = 0, // Reset the count
+                start = 0, // Reset the count
                 showResetConfirmationDialog = false // Hide the dialog
                 // Potentially reset other relevant states if needed
             )

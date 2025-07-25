@@ -30,11 +30,11 @@ fun ZikrEditAddScreen(
 ) {
     val context = LocalContext.current
 
-    val zikrDataModel: DataBaseViewModel = viewModel()
+    val databaseViewModel: DataBaseViewModel = viewModel()
     var zikr by remember { mutableStateOf<Zikr?>(null) }
 
     LaunchedEffect(zikrId) {
-        zikr = if (zikrId == 0) null else zikrDataModel.getZikrById(zikrId)
+        zikr = if (zikrId == 0) null else databaseViewModel.getZikrById(zikrId)
     }
 
     var zikrName by remember { mutableStateOf("") }
@@ -170,10 +170,10 @@ fun ZikrEditAddScreen(
                     }
 
                     if(zikrId == 0){
-                        zikrDataModel.addZikr(Zikr(zikrId,zikrName, zikrDescription,start, end, ))
+                        databaseViewModel.addZikr(Zikr(zikrId,zikrName, zikrDescription,start, end, ))
                         Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
                     } else {
-                        zikrDataModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)
+                        databaseViewModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)
                         Toast.makeText(context, "Zikr updated!", Toast.LENGTH_SHORT).show()
                     }
 

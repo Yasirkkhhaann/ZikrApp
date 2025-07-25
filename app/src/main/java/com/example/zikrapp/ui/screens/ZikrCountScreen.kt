@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,19 +23,13 @@ import com.example.zikrapp.R
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.ui.components.ActionRow
 import com.example.zikrapp.ui.components.BottomAppBar
-import com.example.zikrapp.ui.components.TopAppBar
 import com.example.zikrapp.ui.components.MainCounterCircle
+import com.example.zikrapp.ui.components.TopAppBar
 import com.example.zikrapp.ui.components.ZikrAlertDialog
 import com.example.zikrapp.ui.components.ZikrName
 import com.example.zikrapp.ui.components.ZikrNote
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrControlModel
-import com.example.zikrapp.ui.viewmodel.ZikrDataModel
-
-
-
-
-
 
 
 @Composable
@@ -44,26 +37,29 @@ fun ZikrCountScreen(
     modifier: Modifier = Modifier,
     onNavigateList: () -> Unit,
     zikrControlModel: ZikrControlModel = viewModel(),
-    zikrDataModel: ZikrDataModel = viewModel(),
     databaseViewModel: DataBaseViewModel = viewModel(),
     zikrId: Int
     
 ) {
     val uiState by zikrControlModel.uiState.collectAsState()
-
     var zikr by remember { mutableStateOf<Zikr?>(null) }
 
-
-
     LaunchedEffect(zikrId) {
-        zikr = databaseViewModel.getZikrById(zikrId)
+        zikr = if (zikrId == 0) null else databaseViewModel.getZikrById(zikrId)
     }
 
-    var zikrName by remember { mutableStateOf(zikr?.zikrName ?: "") }
-    val zikrStart = zikr?.zikrCountStart ?: 0
-    val zikrEnd = zikr?.zikrCountEnd ?: 100
-    var zikrDescription by remember { mutableStateOf(zikr?.zikrDescription ?: "") }
+    var zikrName by remember { mutableStateOf("") }
+    var zikrStart by remember { mutableStateOf(0) }
+    var zikrEnd by remember { mutableStateOf(0) }
+    var zikrDescription by remember { mutableStateOf("") }
 
+    LaunchedEffect(zikr) {
+        zikrName = zikr?.zikrName ?: ""
+        zikrStart = zikr?.zikrCountStart?: 0
+        zikrEnd = zikr?.zikrCountEnd?:0
+        zikrDescription = zikr?.zikrDescription ?: ""
+        zikrControlModel.loadZikrBounds(zikrStart, zikrEnd)
+    }
     
     Column(
         modifier = modifier
@@ -81,8 +77,8 @@ fun ZikrCountScreen(
         )
 
         Spacer(Modifier.height(10.dp))
-        ActionRow( uiState.countCurrent,
-            uiState.countTotal,
+        ActionRow(
+            uiState.start,uiState.end,
             onResetClick = { zikrControlModel.showResetConfirmationDialog() },
             modifier = modifier.fillMaxWidth(),
             zikrControlModel = zikrControlModel

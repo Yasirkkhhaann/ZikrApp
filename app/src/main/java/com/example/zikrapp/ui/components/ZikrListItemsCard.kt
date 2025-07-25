@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
-import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
 @Composable
