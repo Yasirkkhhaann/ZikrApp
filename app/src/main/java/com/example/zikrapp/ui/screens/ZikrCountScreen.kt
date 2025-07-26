@@ -1,5 +1,6 @@
 package com.example.zikrapp.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,38 +33,46 @@ import com.example.zikrapp.ui.components.ZikrNote
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
+import kotlinx.coroutines.flow.Flow
 
 
-
-
-
-
-
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ZikrCountScreen(
     modifier: Modifier = Modifier,
     onNavigateList: () -> Unit,
     zikrControlModel: ZikrControlModel = viewModel(),
-    zikrDataModel: ZikrDataModel = viewModel(),
     databaseViewModel: DataBaseViewModel = viewModel(),
     zikrId: Int
     
 ) {
     val uiState by zikrControlModel.uiState.collectAsState()
 
-    var zikr by remember { mutableStateOf<Zikr?>(null) }
-
-
+    // Collect the Flow<Zikr?> as State<Zikr?> reactively
+    var zikrFlow by remember { mutableStateOf<Flow<Zikr?>?>(null) }
 
     LaunchedEffect(zikrId) {
-        zikr = databaseViewModel.getZikrById(zikrId)
+        zikrFlow = databaseViewModel.getZikrById(zikrId) // call suspend function inside coroutine
     }
 
-    var zikrName by remember { mutableStateOf(zikr?.zikrName ?: "") }
-    val zikrStart = zikr?.zikrCountStart ?: 0
-    val zikrEnd = zikr?.zikrCountEnd ?: 100
-    var zikrDescription by remember { mutableStateOf(zikr?.zikrDescription ?: "") }
+    val zikr by zikrFlow?.collectAsState(initial = null) ?: mutableStateOf(null)
 
+
+
+    var zikrName by remember { mutableStateOf("") }
+    var zikrStart by remember { mutableStateOf(0) }
+    var zikrEnd by remember { mutableStateOf(0) }
+    var zikrDescription by remember { mutableStateOf("") }
+
+    LaunchedEffect(zikr) {
+        zikrName = zikr?.zikrName ?: ""
+        zikrStart = zikr?.zikrCountStart?: 0
+        zikrEnd = zikr?.zikrCountEnd?: 0
+        zikrDescription = zikr?.zikrDescription ?: ""
+
+        zikrControlModel.loadZikrBounds(zikrStart,zikrEnd)
+
+    }
     
     Column(
         modifier = modifier
@@ -88,7 +97,7 @@ fun ZikrCountScreen(
             zikrControlModel = zikrControlModel
         )
         Spacer(Modifier.height(10.dp))
-        MainCounterCircle(incrementCount = zikrControlModel::incrementCount)
+        MainCounterCircle(incrementCount = {zikrControlModel.incrementCount()})
         Spacer(Modifier.weight(1f))
         BottomAppBar(onNavigateList = onNavigateList, zikrControlModel = zikrControlModel,
             modifier = modifier.fillMaxWidth().padding(bottom = 30.dp))

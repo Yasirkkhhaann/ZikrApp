@@ -4,6 +4,7 @@ package com.example.zikrapp.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ZikrDao {
@@ -11,10 +12,10 @@ interface ZikrDao {
     fun addZikr(zikr: Zikr)
 
     @Query("SELECT * FROM zikr_table WHERE zikrId = :id")
-    fun getZikrById(id: Int): Zikr?
+    fun getZikrById(id: Int): Flow<Zikr?>
 
     @Query("SELECT * FROM zikr_table")
-    fun getAllZikrs(): LiveData<List<Zikr>>
+    fun getAllZikrs(): Flow<List<Zikr>>
 
     @Query("DELETE FROM zikr_table WHERE zikrId = :zikrId")
     fun deleteZikr(zikrId: Int)

@@ -114,60 +114,6 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
     }
 }
 
-
-
-
-
-
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ZikrApp(
-//    navController: NavHostController = rememberNavController(),
-//    viewModel: ControlsViewModel = viewModel(), // you might want to fix this too
-//    zikrViewModel: ZikrViewModel = viewModel()
-//) {
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(Color(0XFF1A1A1A))
-//    ) {
-//
-//        NavHost(
-//            navController = navController,
-//            startDestination = ZikrScreen.ZikrCount.name,
-//            route = "main"
-//        ){
-//
-//            composable(route = ZikrScreen.ZikrCount.name) {
-//
-//                ZikrCountScreen(navController = navController,viewModel = viewModel)
-//            }
-//
-//            composable(route = ZikrScreen.ZikrList.name) {
-//
-//                ZikrListScreen(navController = navController,zkrViewModel = zikrViewModel)
-//            }
-//
-//            composable(route = "${ZikrScreen.ZikrEditAdd.name}?zikrId={zikrId}",
-//                arguments = listOf(navArgument("zikrId") { type = NavType.IntType
-//                    defaultValue = 0 })) {
-//
-//                val zikrId = it.arguments?.getInt("zikrId") ?: 0
-//                ZikrEditAddScreen(navController, zikrViewModel, zikrId)
-//            }
-//
-//        }
-//
-//    }
-//
-//}
-
-
-
-
-
 @Preview
 @Composable
 fun ZikrAppPreview() {

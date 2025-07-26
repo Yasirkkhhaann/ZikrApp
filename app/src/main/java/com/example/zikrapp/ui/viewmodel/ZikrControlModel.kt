@@ -49,6 +49,7 @@ class ZikrControlModel : ViewModel() {
         _uiState.update { it.copy(countCurrent = start, countTotal = end) }
     }
 
+
     fun incrementCount() {
 
        if(_uiState.value.countCurrent < _uiState.value.countTotal){
@@ -58,6 +59,15 @@ class ZikrControlModel : ViewModel() {
                )
            }
        }
+
+        else if(_uiState.value.countTotal == 0){
+            _uiState.update {
+                it.copy(
+                    countCurrent = it.countCurrent + 1,
+
+                )
+            }
+        }
 
         else{
            showZikrCompletedDialog()

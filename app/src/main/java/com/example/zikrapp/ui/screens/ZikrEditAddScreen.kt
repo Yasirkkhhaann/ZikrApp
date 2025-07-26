@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -6,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,22 +22,31 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
-import com.example.zikrapp.ui.viewmodel.ZikrDataModel
+import kotlinx.coroutines.flow.Flow
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ZikrEditAddScreen(
     zikrId: Int,
     onDone: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    databaseViewModel: DataBaseViewModel = viewModel(),
 ) {
     val context = LocalContext.current
 
-    val zikrDataModel: DataBaseViewModel = viewModel()
-    var zikr by remember { mutableStateOf<Zikr?>(null) }
+    val dataBaseViewModel: DataBaseViewModel = viewModel()
+
+
+    var zikrFlow by remember { mutableStateOf<Flow<Zikr?>?>(null) }
+
 
     LaunchedEffect(zikrId) {
-        zikr = if (zikrId == 0) null else zikrDataModel.getZikrById(zikrId)
+        zikrFlow = databaseViewModel.getZikrById(zikrId) // call suspend function inside coroutine
     }
+
+    val zikr by zikrFlow?.collectAsState(initial = null) ?: mutableStateOf(null)
+
+
 
     var zikrName by remember { mutableStateOf("") }
     var zikrStart by remember { mutableStateOf("") }
@@ -170,10 +181,10 @@ fun ZikrEditAddScreen(
                     }
 
                     if(zikrId == 0){
-                        zikrDataModel.addZikr(Zikr(zikrId,zikrName, zikrDescription,start, end, ))
+                        dataBaseViewModel.addZikr(Zikr(zikrId,zikrName, zikrDescription,start, end, ))
                         Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
                     } else {
-                        zikrDataModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)
+                        dataBaseViewModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)
                         Toast.makeText(context, "Zikr updated!", Toast.LENGTH_SHORT).show()
                     }
 

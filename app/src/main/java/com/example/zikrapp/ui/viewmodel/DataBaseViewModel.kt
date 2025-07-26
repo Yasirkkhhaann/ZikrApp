@@ -9,6 +9,10 @@ import com.example.zikrapp.data.DatabaseInitializer
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.data.ZikrDao
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -17,7 +21,8 @@ class DataBaseViewModel : ViewModel() {
 
     val ZikrDao: ZikrDao = DatabaseInitializer.zikrDatabase.getzikrDao()
 
-    val zikrlist: LiveData<List<Zikr>> = ZikrDao.getAllZikrs()
+    val zikrlist: StateFlow<List<Zikr>> = ZikrDao.getAllZikrs().
+    stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun addZikr(zikr: Zikr) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -26,7 +31,7 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-    suspend fun getZikrById(id: Int): Zikr? = withContext(Dispatchers.IO) {
+    suspend fun getZikrById(id: Int): Flow<Zikr?> = withContext(Dispatchers.IO) {
         ZikrDao.getZikrById(id)
     }
 
