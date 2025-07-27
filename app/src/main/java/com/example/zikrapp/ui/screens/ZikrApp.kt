@@ -89,7 +89,7 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
                             modifier = Modifier,
                             zikrControlModel = zikrControlModel,
                             zikrId = route.zikrId,
-                            databaseViewModel = dataBaseViewModel
+                            databaseViewModel = dataBaseViewModel,
 
                         )
                     }
@@ -98,6 +98,7 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
                             onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(0)) },
                             onEditZikr = { id -> navigate(ZikrRoute.ZikrEditAdd(id)) },
                             onChangeZikr = { id -> navigate(ZikrRoute.ZikrCount(id)) },
+
 
                         )
                     }

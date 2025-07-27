@@ -17,6 +17,8 @@ interface ZikrDao {
     @Query("SELECT * FROM zikr_table")
     fun getAllZikrs(): Flow<List<Zikr>>
 
+    @Query("UPDATE zikr_table SET zikrCountStart = :count where zikrId = :id")
+    fun updatebyidcount(id: Int,count:Int)
     @Query("DELETE FROM zikr_table WHERE zikrId = :zikrId")
     fun deleteZikr(zikrId: Int)
 

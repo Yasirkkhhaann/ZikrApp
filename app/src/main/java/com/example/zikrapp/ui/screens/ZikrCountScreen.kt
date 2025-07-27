@@ -43,7 +43,7 @@ fun ZikrCountScreen(
     onNavigateList: () -> Unit,
     zikrControlModel: ZikrControlModel = viewModel(),
     databaseViewModel: DataBaseViewModel = viewModel(),
-    zikrId: Int
+    zikrId: Int,
     
 ) {
     val uiState by zikrControlModel.uiState.collectAsState()
@@ -99,7 +99,7 @@ fun ZikrCountScreen(
         Spacer(Modifier.height(10.dp))
         MainCounterCircle(incrementCount = {zikrControlModel.incrementCount()})
         Spacer(Modifier.weight(1f))
-        BottomAppBar(onNavigateList = onNavigateList, zikrControlModel = zikrControlModel,
+        BottomAppBar(onNavigateList = onNavigateList, updatezikrcount = {if(zikrId!=0){databaseViewModel.updatezikrbycount(zikrId,uiState.countCurrent)}}, zikrControlModel = zikrControlModel,
             modifier = modifier.fillMaxWidth().padding(bottom = 30.dp))
 
 

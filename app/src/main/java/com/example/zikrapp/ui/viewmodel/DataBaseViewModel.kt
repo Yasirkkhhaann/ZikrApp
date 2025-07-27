@@ -35,6 +35,14 @@ class DataBaseViewModel : ViewModel() {
         ZikrDao.getZikrById(id)
     }
 
+    fun updatezikrbycount(id: Int, count:Int){
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            ZikrDao.updatebyidcount(id,count)
+
+        }
+    }
 
     fun deleteZikr(zikrId: Int) {
 
