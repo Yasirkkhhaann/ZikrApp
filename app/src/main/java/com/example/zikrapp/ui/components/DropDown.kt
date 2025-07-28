@@ -28,10 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,9 +43,11 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
+import com.example.zikrapp.data.ZikrUiStatee
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
@@ -52,7 +56,12 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
     zikrControlModel: ZikrControlModel = viewModel()) {
     var expanded by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val datastore = remember { ZikrUiStatee(context) }
 
+
+
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -79,7 +88,10 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
                 text = { Text("Continue    " , style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.resource_continue), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { zikrControlModel.updatelastZikrId(zikrid) ; navigatToCountsreen() }
+                onClick = {
+                    coroutineScope.launch{
+                        datastore.updatezikrid(zikrid)
+                    };zikrControlModel.updatelastZikrId(zikrid) ; navigatToCountsreen() }
             )
             DropdownMenuItem(
                 text = { Text("Edit    ", style = TextStyle(color = Color.White)) },

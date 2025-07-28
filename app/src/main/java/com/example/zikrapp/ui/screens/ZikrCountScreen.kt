@@ -25,9 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
 import com.example.zikrapp.data.Zikr
+import com.example.zikrapp.data.ZikrUiStatee
 import com.example.zikrapp.ui.components.ActionRow
 import com.example.zikrapp.ui.components.BottomAppBar
 import com.example.zikrapp.ui.components.TopAppBar
@@ -39,6 +41,8 @@ import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.last
+import kotlin.math.absoluteValue
 
 
 @SuppressLint("UnrememberedMutableState")
@@ -53,13 +57,17 @@ fun ZikrCountScreen(
 ) {
     val uiState by zikrControlModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
+    val datastore = remember { ZikrUiStatee(context) }
 
+    val zikrId by datastore.zikrId.collectAsStateWithLifecycle(3)
     // Remember latest values to use inside lifecycle observer
     val currentCount by rememberUpdatedState(uiState.countCurrent)
     // Collect the Flow<Zikr?> as State<Zikr?> reactively
     var zikrFlow by remember { mutableStateOf<Flow<Zikr?>?>(null) }
 
     LaunchedEffect(uiState.lastZikrId) {
+        zikrControlModel.updatelastZikrId(zikrFlow?.last()?.zikrId?:0)
         zikrFlow = databaseViewModel.getZikrById(uiState.lastZikrId) // call suspend function inside coroutine
     }
 
