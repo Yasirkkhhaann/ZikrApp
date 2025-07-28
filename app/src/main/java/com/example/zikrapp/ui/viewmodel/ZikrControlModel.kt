@@ -32,9 +32,24 @@ class ZikrControlModel : ViewModel() {
 
 
 
+//    fun settocurrent(id:Int,count:Int){
+//
+//        _uiState.update {
+//            it.copy(
+//                currentZikrId = id,
+//                countCurrent = count
+//            )
+//        }
+//    }
 
+    fun updatelastZikrId(id:Int){
+        _uiState.update {
+            it.copy(
+                lastZikrId = id
+            )
+        }
 
-
+    }
 
 
     fun toggleSpeaker() {

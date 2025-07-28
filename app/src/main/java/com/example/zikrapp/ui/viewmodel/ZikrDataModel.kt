@@ -22,6 +22,7 @@ class ZikrDataModel : ViewModel() {
     }
 
 
+
     fun loadCurrentZikr(zikrId: Int): Zikr? {
 
         val zikr =  zikrs.find { it.zikrId == zikrId }

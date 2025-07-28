@@ -30,8 +30,8 @@ import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
 @Composable
-fun ZikrListItemCard(
-    onChangeZikr: (Int) -> Unit, onEditZikr: (Int) -> Unit, zikr: Zikr, dataBaseViewModel: DataBaseViewModel = viewModel()) {
+fun ZikrListItemCard(onEditZikr: (Int) -> Unit,
+                     navigatToCountsreen : () -> Unit,zikr: Zikr, dataBaseViewModel: DataBaseViewModel = viewModel()) {
 
     ElevatedCard(
         shape = RoundedCornerShape(14.dp),
@@ -142,7 +142,7 @@ fun ZikrListItemCard(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        DropdownMenuWithDetails(onChangeZikr,onEditZikr,zikrid = zikr.zikrId, dataBaseViewModel = dataBaseViewModel)
+                        DropdownMenuWithDetails(onEditZikr,zikrid = zikr.zikrId, navigatToCountsreen,dataBaseViewModel = dataBaseViewModel)
 
                     }
                 }

@@ -23,7 +23,7 @@ import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 
 
 @Composable
-fun BottomAppBar(modifier: Modifier = Modifier, updatezikrcount:()-> Unit, onNavigateList: () -> Unit, zikrControlModel: ZikrControlModel = viewModel()) {
+fun BottomAppBar(modifier: Modifier = Modifier, onNavigateList: () -> Unit, zikrControlModel: ZikrControlModel = viewModel()) {
 
             val uiState by zikrControlModel.uiState.collectAsState()
 
@@ -48,7 +48,7 @@ fun BottomAppBar(modifier: Modifier = Modifier, updatezikrcount:()-> Unit, onNav
 
                 CircleIconButton(
                     icon = painterResource(id = R.drawable.theme2),
-                    onClick = { onNavigateList();updatezikrcount()  })
+                    onClick = { onNavigateList()  })
             }
 
         }

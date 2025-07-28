@@ -42,11 +42,14 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
+import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
-fun DropdownMenuWithDetails(
-    onChangeZikr: (Int) -> Unit,onEditZikr: (Int) -> Unit,zikrid: Int,dataBaseViewModel: DataBaseViewModel = viewModel()) {
+fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
+                            navigatToCountsreen: () -> Unit,
+    dataBaseViewModel: DataBaseViewModel = viewModel(),
+    zikrControlModel: ZikrControlModel = viewModel()) {
     var expanded by remember { mutableStateOf(false) }
 
 
@@ -76,7 +79,7 @@ fun DropdownMenuWithDetails(
                 text = { Text("Continue    " , style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.resource_continue), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { onChangeZikr(zikrid) }
+                onClick = { zikrControlModel.updatelastZikrId(zikrid) ; navigatToCountsreen() }
             )
             DropdownMenuItem(
                 text = { Text("Edit    ", style = TextStyle(color = Color.White)) },

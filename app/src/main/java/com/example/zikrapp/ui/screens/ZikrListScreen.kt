@@ -36,8 +36,8 @@ import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 @Composable
 fun ZikrListScreen(onAddZikr: () -> Unit, onEditZikr: (Int) -> Unit,
-                   onChangeZikr: (Int) -> Unit,
                    dbZikrDataModel: DataBaseViewModel = viewModel(),
+                   navigatToCountsreen: () -> Unit
                    ) {
 
 
@@ -73,7 +73,7 @@ fun ZikrListScreen(onAddZikr: () -> Unit, onEditZikr: (Int) -> Unit,
                         val zikr = zikrList[it]
 
                         Spacer(modifier = Modifier.height(10.dp))
-                        ZikrListItemCard(onChangeZikr, onEditZikr,zikr = zikr,dbZikrDataModel)
+                        ZikrListItemCard(onEditZikr,navigatToCountsreen,zikr = zikr,dbZikrDataModel)
                     }
 
 

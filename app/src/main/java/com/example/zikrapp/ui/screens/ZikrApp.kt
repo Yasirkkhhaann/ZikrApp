@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -26,11 +28,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface ZikrRoute {
     @Serializable
-    data class ZikrCount(val zikrId: Int = 0) : ZikrRoute
+    data class ZikrCount(val zikrId: Int) : ZikrRoute
     @Serializable
     object ZikrList : ZikrRoute
     @Serializable
-    data class ZikrEditAdd(val zikrId: Int = 1) : ZikrRoute
+    data class ZikrEditAdd(val zikrId: Int) : ZikrRoute
 }
 //
 //
@@ -46,7 +48,8 @@ sealed interface ZikrRoute {
 @Composable
 fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: ZikrDataModel = viewModel(),
             dataBaseViewModel: DataBaseViewModel = viewModel()) {
-    val backStack = remember { mutableStateListOf<ZikrRoute>(ZikrRoute.ZikrCount()) }
+    val uiState by zikrControlModel.uiState.collectAsState()
+    val backStack = remember { mutableStateListOf<ZikrRoute>(ZikrRoute.ZikrCount(zikrId = uiState.lastZikrId)) }
     val context = LocalContext.current
     fun navigate(to: ZikrRoute) = backStack.add(to)
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -88,8 +91,8 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
                             onNavigateList = { navigate(ZikrRoute.ZikrList) },
                             modifier = Modifier,
                             zikrControlModel = zikrControlModel,
-                            zikrId = route.zikrId,
                             databaseViewModel = dataBaseViewModel,
+                            onLeaveScreen = { id, count -> dataBaseViewModel.updatezikrbycount(id, count) }
 
                         )
                     }
@@ -97,7 +100,7 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
                         ZikrListScreen(
                             onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(0)) },
                             onEditZikr = { id -> navigate(ZikrRoute.ZikrEditAdd(id)) },
-                            onChangeZikr = { id -> navigate(ZikrRoute.ZikrCount(id)) },
+                            navigatToCountsreen = { navigate(ZikrRoute.ZikrCount(uiState.lastZikrId))}
 
 
                         )

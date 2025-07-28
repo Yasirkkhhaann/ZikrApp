@@ -22,25 +22,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
+import com.example.zikrapp.ui.viewmodel.ZikrControlModel
 import kotlinx.coroutines.flow.Flow
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ZikrEditAddScreen(
-    zikrId: Int,
     onDone: () -> Unit,
     onCancel: () -> Unit,
     databaseViewModel: DataBaseViewModel = viewModel(),
+    zikrId: Int
 ) {
     val context = LocalContext.current
 
     val dataBaseViewModel: DataBaseViewModel = viewModel()
 
 
+
     var zikrFlow by remember { mutableStateOf<Flow<Zikr?>?>(null) }
-
-
-    LaunchedEffect(zikrId) {
+        LaunchedEffect(zikrId) {
         zikrFlow = databaseViewModel.getZikrById(zikrId) // call suspend function inside coroutine
     }
 
