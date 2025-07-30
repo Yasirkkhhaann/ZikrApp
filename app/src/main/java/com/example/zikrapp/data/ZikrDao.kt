@@ -14,6 +14,14 @@ interface ZikrDao {
     @Query("SELECT * FROM zikr_table WHERE zikrId = :id")
     fun getZikrById(id: Int): Flow<Zikr?>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addtest(id: ZikrStateee)
+    @Query("Update zikr_state set lastZikrId = :id where id = 1")
+    fun setLastZikr(id: Int)
+
+    @Query("SELECT lastZikrId FROM zikr_state where id = 1 limit 1")
+    fun getLastZikrId(): Flow<Int?>
+
     @Query("SELECT * FROM zikr_table")
     fun getAllZikrs(): Flow<List<Zikr>>
 

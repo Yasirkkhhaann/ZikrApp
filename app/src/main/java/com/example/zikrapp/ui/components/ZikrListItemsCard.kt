@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
-import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 
 
 @Composable
@@ -54,7 +53,7 @@ fun ZikrListItemCard(onEditZikr: (Int) -> Unit,
                     Column(modifier = Modifier.weight(8f).fillMaxSize()) {
 
 
-                        Row(modifier = Modifier.fillMaxWidth(),) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
 
                             Text(
                                 "Count :",
@@ -79,7 +78,7 @@ fun ZikrListItemCard(onEditZikr: (Int) -> Unit,
                             )
                         }
 
-                        Row(modifier = Modifier.fillMaxWidth(),) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
 
                             Text(
                                 "Name :",
@@ -95,7 +94,7 @@ fun ZikrListItemCard(onEditZikr: (Int) -> Unit,
                             )
 
                             Text(
-                                "${zikr.zikrName}",
+                                zikr.zikrName,
                                 color = Color.White,
                                 modifier = Modifier.weight(0.6f).fillMaxWidth().padding(top = 5.dp),
                                 style = TextStyle(
@@ -106,7 +105,7 @@ fun ZikrListItemCard(onEditZikr: (Int) -> Unit,
                             )
                         }
 
-                        Row(modifier = Modifier.fillMaxWidth(),) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
 
                             Text(
                                 "Note :",
@@ -122,7 +121,7 @@ fun ZikrListItemCard(onEditZikr: (Int) -> Unit,
                             )
 
                             Text(
-                                "${zikr.zikrDescription}",color = Color.White,
+                                zikr.zikrDescription,color = Color.White,
                                 modifier = Modifier.weight(0.6f).fillMaxWidth().padding(top = 5.dp),
                                 style = TextStyle(
                                     fontSize = 13.sp,

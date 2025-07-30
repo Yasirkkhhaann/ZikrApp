@@ -80,7 +80,7 @@ dependencies {
 
 
     implementation(libs.androidx.datastore.preferences)
-
+    implementation(libs.androidx.lifecycle.viewmodel.compose) // Or latest
 
 
     implementation(libs.androidx.navigation3.ui)

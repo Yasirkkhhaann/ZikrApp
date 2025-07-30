@@ -7,7 +7,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,8 +20,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
-import com.example.zikrapp.ui.viewmodel.ZikrControlModel
-import com.example.zikrapp.ui.viewmodel.ZikrDataModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -46,8 +43,8 @@ sealed interface ZikrRoute {
 
 
 @Composable
-fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: ZikrDataModel = viewModel(),
-            dataBaseViewModel: DataBaseViewModel = viewModel()) {
+fun ZikrApp(
+            zikrControlModel: DataBaseViewModel = viewModel()) {
     val uiState by zikrControlModel.uiState.collectAsState()
     val backStack = remember { mutableStateListOf<ZikrRoute>(ZikrRoute.ZikrCount(zikrId = uiState.lastZikrId)) }
     val context = LocalContext.current
@@ -91,9 +88,6 @@ fun ZikrApp(zikrControlModel: ZikrControlModel = viewModel(), zikrDataModel: Zik
                             onNavigateList = { navigate(ZikrRoute.ZikrList) },
                             modifier = Modifier,
                             zikrControlModel = zikrControlModel,
-                            databaseViewModel = dataBaseViewModel,
-                            onLeaveScreen = { id, count -> dataBaseViewModel.updatezikrbycount(id, count) }
-
                         )
                     }
                     ZikrRoute.ZikrList -> NavEntry(route) {

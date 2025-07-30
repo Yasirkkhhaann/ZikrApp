@@ -13,7 +13,7 @@ data class ZikrUiState(
     val snackbarMessage: String = "",
 
 
-    val lastZikrId: Int = 3,
+    val lastZikrId: Int = 2,
 
 
     val zikrName: String = "",

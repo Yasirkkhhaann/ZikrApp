@@ -21,7 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
-import com.example.zikrapp.ui.viewmodel.ZikrControlModel
+import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 
 
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -31,7 +31,7 @@ fun ActionRow(
     totalCount: Int,
     onResetClick: () -> Unit,
     modifier: Modifier = Modifier,
-    zikrControlModel: ZikrControlModel = viewModel()
+    zikrControlModel: DataBaseViewModel = viewModel()
 ) {
 
     val uiState by zikrControlModel.uiState.collectAsState()
