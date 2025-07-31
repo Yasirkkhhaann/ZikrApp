@@ -14,7 +14,7 @@ import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 
 
 @Composable
-fun BottomAppBar(modifier: Modifier = Modifier,printLastZikrId: () -> Unit,increaseid: () -> Unit, onNavigateList: () -> Unit, zikrControlModel: DataBaseViewModel = viewModel()) {
+fun BottomAppBar(modifier: Modifier = Modifier,onNavigateList: () -> Unit, zikrControlModel: DataBaseViewModel = viewModel()) {
 
             val uiState by zikrControlModel.uiState.collectAsState()
 
@@ -28,14 +28,14 @@ fun BottomAppBar(modifier: Modifier = Modifier,printLastZikrId: () -> Unit,incre
                         id = if (uiState.isSpeakerOn)
                             R.drawable.speakeron else R.drawable.speakeroff
                     ),
-                    onClick = { zikrControlModel.toggleSpeaker();printLastZikrId() })
+                    onClick = { zikrControlModel.toggleSpeaker() })
 
                 CircleIconButton(
                     icon = painterResource(
                         id = if (uiState.isVibrationOn)
                             R.drawable.vibrationon else R.drawable.vibrationoff
                     ),
-                    onClick = { zikrControlModel.toggleVibration();increaseid() })
+                    onClick = { zikrControlModel.toggleVibration() })
 
                 CircleIconButton(
                     icon = painterResource(id = R.drawable.theme2),

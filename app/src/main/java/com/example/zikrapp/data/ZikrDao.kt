@@ -15,7 +15,7 @@ interface ZikrDao {
     fun getZikrById(id: Int): Flow<Zikr?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addtest(id: ZikrStateee)
+    fun adduistate(id: ZikrStateee)
     @Query("Update zikr_state set lastZikrId = :id where id = 1")
     fun setLastZikr(id: Int)
 

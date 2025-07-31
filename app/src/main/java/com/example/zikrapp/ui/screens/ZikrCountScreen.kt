@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
 import com.example.zikrapp.data.Zikr
+import com.example.zikrapp.data.ZikrStateee
 import com.example.zikrapp.ui.components.ActionRow
 import com.example.zikrapp.ui.components.BottomAppBar
 import com.example.zikrapp.ui.components.MainCounterCircle
@@ -97,11 +98,10 @@ fun ZikrCountScreen(
             zikrControlModel = zikrControlModel
         )
         Spacer(Modifier.height(10.dp))
-        MainCounterCircle(incrementCount = {zikrControlModel.incrementCount() })
+        MainCounterCircle(incrementCount = { zikrControlModel.incrementCount();  })
         Spacer(Modifier.weight(1f))
-        BottomAppBar(printLastZikrId = {
-
-        },increaseid = {},onNavigateList = onNavigateList, zikrControlModel = zikrControlModel,
+        BottomAppBar(
+          onNavigateList = onNavigateList, zikrControlModel = zikrControlModel,
             modifier = modifier.fillMaxWidth().padding(bottom = 30.dp))
 
 

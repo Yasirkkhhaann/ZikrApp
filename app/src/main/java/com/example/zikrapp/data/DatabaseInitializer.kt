@@ -3,6 +3,7 @@ package com.example.zikrapp.data
 import ZikrDatabase
 import android.app.Application
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 

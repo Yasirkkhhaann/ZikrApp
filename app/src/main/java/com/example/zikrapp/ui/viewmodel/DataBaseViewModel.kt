@@ -1,7 +1,11 @@
 package com.example.zikrapp.ui.viewmodel
 
+import android.content.Context
+import android.media.MediaPlayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.zikrapp.R
 import com.example.zikrapp.data.DatabaseInitializer
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.data.ZikrDao
@@ -21,6 +25,7 @@ class DataBaseViewModel : ViewModel() {
 
 
     val ZikrDao: ZikrDao = DatabaseInitializer.zikrDatabase.getzikrDao()
+
 
     private val _uiState = MutableStateFlow(ZikrUiState())
 
@@ -80,10 +85,10 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-    fun addtest(id: ZikrStateee) {
+    fun adduistate(state: ZikrStateee) {
 
         viewModelScope.launch(Dispatchers.IO) {
-            ZikrDao.addtest(id)
+            ZikrDao.adduistate(state)
         }
 
     }
@@ -207,7 +212,7 @@ class DataBaseViewModel : ViewModel() {
             isSpeakerOn = !_uiState.value.isSpeakerOn
         )
         // Add your sound control logic here, e.g.:
-        if (_uiState.value.isSpeakerOn) playSound() else stopSound()
+
     }
 
     fun toggleLock() {
@@ -240,7 +245,10 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-    private fun playSound() {
+    private fun playSound(context: Context) {
+
+
 
     }
+
 }
