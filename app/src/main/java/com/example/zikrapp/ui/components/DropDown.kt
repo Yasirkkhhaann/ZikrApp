@@ -60,13 +60,13 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
                 text = { Text("Continue    " , style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.resource_continue), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { coroutine.launch { dataBaseViewModel.setLastZikr(zikrid) }; navigatToCountsreen() }
+                onClick = { expanded = false ;coroutine.launch { dataBaseViewModel.setLastZikr(zikrid) }; navigatToCountsreen() }
             )
             DropdownMenuItem(
                 text = { Text("Edit    ", style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.edit), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { onEditZikr(zikrid) }
+                onClick = {expanded = false ; onEditZikr(zikrid) }
             )
 
             // Second section
@@ -74,7 +74,7 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
                 text = { Text("Delete    ", style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.delete), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { dataBaseViewModel.deleteZikr(zikrid) }
+                onClick = {expanded = false ; dataBaseViewModel.deleteZikr(zikrid) }
             )
 
             // Third section
@@ -82,7 +82,7 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
                 text = { Text("Reset    ", style = TextStyle(color = Color.White)) },
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.reset), tint = Color.White, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { /* Do something... */ }
+                onClick = { expanded = false ; dataBaseViewModel.resetZikr(zikrid) }
             )
         }
     }

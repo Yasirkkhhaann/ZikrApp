@@ -1,5 +1,7 @@
 package com.example.zikrapp.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -23,8 +25,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
-import kotlinx.serialization.internal.throwMissingFieldException
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun MainCounterCircle(incrementCount: () -> Unit,
                       originalSize: Dp = 250.dp,zikrControlModel: DataBaseViewModel = viewModel() ) {
@@ -53,13 +55,21 @@ fun MainCounterCircle(incrementCount: () -> Unit,
                 interactionSource = interactionSource,
                 indication = null, // Disable default ripple if you want only the bounce
                 onClick = {
-                    incrementCount();
+
                 if(uiState.isSpeakerOn){
                     if(uiState.countCurrent != uiState.countTotal){
-                        SoundPlayer.playclick(context)
+                        zikrControlModel.playclick(context)
                     }
 
-                }// No longer toggling expandContent or changing base size here
+                }
+                 if(uiState.isVibrationOn){
+                     if(uiState.countCurrent != uiState.countTotal){
+                         Vibration().vibratee(context,100)
+                     }
+                 }
+
+                    // No longer toggling expandContent or changing base size here
+                    incrementCount()
                 }
             )
             .background(

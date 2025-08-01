@@ -22,16 +22,18 @@ class DatabaseInitializer : Application()  {
             ZikrDatabase::class.java,
             ZikrDatabase.DATABASE_NAME
 
-        ).addMigrations(MIGRATION_2_3).build()
+        ).createFromAsset("database/zikrs2.db").build()
     }
 
 
 }
 
-val MIGRATION_2_3 = object : Migration(2, 3) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL(
-            "CREATE TABLE IF NOT EXISTS `zikr_state` (`id` INTEGER NOT NULL, `lastZikrId` INTEGER NOT NULL, PRIMARY KEY(`id`))"
-        )
-    }
-}
+
+//.addMigrations(MIGRATION_2_3)
+//val MIGRATION_2_3 = object : Migration(2, 3) {
+//    override fun migrate(database: SupportSQLiteDatabase) {
+//        database.execSQL(
+//            "CREATE TABLE IF NOT EXISTS `zikr_state` (`id` INTEGER NOT NULL, `lastZikrId` INTEGER NOT NULL, PRIMARY KEY(`id`))"
+//        )
+//    }
+//}

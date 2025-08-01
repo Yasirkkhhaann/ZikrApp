@@ -182,7 +182,14 @@ fun ZikrEditAddScreen(
                     if(zikrId == 0){
                         dataBaseViewModel.addZikr(Zikr(zikrId,zikrName, zikrDescription,start, end, ))
                         Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
-                    } else {
+                    }
+                    if(zikrStart > zikrEnd){
+
+                        Toast.makeText(context, "Start should be smaller than End", Toast.LENGTH_SHORT).show()
+                        return@clickable
+                    }
+
+                    else {
                         dataBaseViewModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)
                         Toast.makeText(context, "Zikr updated!", Toast.LENGTH_SHORT).show()
                     }

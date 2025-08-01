@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
+import com.example.zikrapp.data.ZikrStateee
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 
 
@@ -35,7 +36,7 @@ fun BottomAppBar(modifier: Modifier = Modifier,onNavigateList: () -> Unit, zikrC
                         id = if (uiState.isVibrationOn)
                             R.drawable.vibrationon else R.drawable.vibrationoff
                     ),
-                    onClick = { zikrControlModel.toggleVibration() })
+                    onClick = { zikrControlModel.toggleVibration(); })
 
                 CircleIconButton(
                     icon = painterResource(id = R.drawable.theme2),

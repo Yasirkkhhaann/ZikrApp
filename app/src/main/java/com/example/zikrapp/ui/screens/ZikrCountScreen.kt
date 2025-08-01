@@ -47,8 +47,14 @@ fun ZikrCountScreen(
 
    val zikrId = zikrControlModel.getLastZikrId().collectAsState(null)
 
+    val speakerState = zikrControlModel.getSoundState().collectAsState(null)
 
+    val vibrationState = zikrControlModel.getVibrationState().collectAsState(null)
+    zikrControlModel.setStateForvibration(vibrationState.value?:1)
+
+    zikrControlModel.setStateForspeaker(speakerState.value?:1)
     zikrControlModel.updatelastZikrId(zikrId.value?:1)
+
     var zikrFlow by remember { mutableStateOf<Flow<Zikr?>?>(null) }
     LaunchedEffect(uiState.lastZikrId) {
         zikrFlow = zikrControlModel.getZikrById(uiState.lastZikrId)
@@ -78,7 +84,7 @@ fun ZikrCountScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 40.dp, start = 30.dp, end = 30.dp),
+            .padding(top = 80.dp, start = 30.dp, end = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -90,14 +96,14 @@ fun ZikrCountScreen(
             zikrDescription
         )
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(20.dp))
         ActionRow( uiState.countCurrent,
             uiState.countTotal,
             onResetClick = { zikrControlModel.showResetConfirmationDialog() },
             modifier = modifier.fillMaxWidth(),
             zikrControlModel = zikrControlModel
         )
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(30.dp))
         MainCounterCircle(incrementCount = { zikrControlModel.incrementCount();  })
         Spacer(Modifier.weight(1f))
         BottomAppBar(

@@ -19,8 +19,21 @@ interface ZikrDao {
     @Query("Update zikr_state set lastZikrId = :id where id = 1")
     fun setLastZikr(id: Int)
 
+    @Query("Update zikr_state set isSpeakerOn = :id where id = 1")
+    fun setSoundState(id: Int)
+
+    @Query("UPDATE zikr_table SET zikrCountStart = 0 where zikrId = :id")
+    fun resetZikr(id:Int)
     @Query("SELECT lastZikrId FROM zikr_state where id = 1 limit 1")
     fun getLastZikrId(): Flow<Int?>
+
+    @Query("SELECT isSpeakerOn FROM zikr_state where id = 1 limit 1")
+    fun getSoundState():Flow<Int?>
+    @Query("SELECT isVibrationOn FROM zikr_state where id = 1 limit 1")
+    fun getVibrationState():Flow<Int?>
+
+    @Query("Update zikr_state set isVibrationOn = :id where id = 1")
+    fun setVibrationState(id: Int)
 
     @Query("SELECT * FROM zikr_table")
     fun getAllZikrs(): Flow<List<Zikr>>

@@ -2,14 +2,12 @@ package com.example.zikrapp.ui.viewmodel
 
 import android.content.Context
 import android.media.MediaPlayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.zikrapp.R
 import com.example.zikrapp.data.DatabaseInitializer
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.data.ZikrDao
-import com.example.zikrapp.data.ZikrStateee
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +24,7 @@ class DataBaseViewModel : ViewModel() {
 
     val ZikrDao: ZikrDao = DatabaseInitializer.zikrDatabase.getzikrDao()
 
-
+    val coro = viewModelScope
     private val _uiState = MutableStateFlow(ZikrUiState())
 
     val uiState: StateFlow<ZikrUiState> = _uiState.asStateFlow()
@@ -43,6 +41,54 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
+
+
+    fun setStateForspeaker(soundState:Int){
+
+        if(soundState == 1){
+            _uiState.update {
+                it.copy(
+
+                    isSpeakerOn = true
+                )
+            }
+        }
+        if(soundState == 0){
+            _uiState.update {
+                it.copy(
+
+                    isSpeakerOn = false
+                )
+            }
+
+        }
+
+
+    }
+
+    fun setStateForvibration(vibrationState:Int){
+
+        if(vibrationState == 1){
+            _uiState.update {
+                it.copy(
+
+                    isVibrationOn = true
+                )
+            }
+        }
+        if(vibrationState == 0){
+            _uiState.update {
+                it.copy(
+
+                    isVibrationOn = false
+                )
+            }
+
+        }
+
+
+    }
+
         fun loadZikrBounds(start: Int, end: Int) {
         _uiState.update { it.copy(countCurrent = start, countTotal = end) }
     }
@@ -50,6 +96,17 @@ class DataBaseViewModel : ViewModel() {
 
     fun getLastZikrId(): Flow<Int?> = ZikrDao.getLastZikrId()
 
+    fun getSoundState(): Flow<Int?> = ZikrDao.getSoundState()
+
+    suspend fun setSoundState(id: Int) = withContext(Dispatchers.IO) {
+        ZikrDao.setSoundState(id)
+    }
+
+    fun getVibrationState(): Flow<Int?> = ZikrDao.getVibrationState()
+
+    suspend fun setVibrationState(id: Int) = withContext(Dispatchers.IO) {
+        ZikrDao.setVibrationState(id)
+    }
 
     suspend fun setLastZikr(id: Int) = withContext(Dispatchers.IO) {
         ZikrDao.setLastZikr(id)
@@ -77,6 +134,11 @@ class DataBaseViewModel : ViewModel() {
         }
     }
 
+    fun resetZikr(id:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            ZikrDao.resetZikr(id)
+        }
+    }
 
     fun addZikr(zikr: Zikr) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -85,13 +147,7 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-    fun adduistate(state: ZikrStateee) {
 
-        viewModelScope.launch(Dispatchers.IO) {
-            ZikrDao.adduistate(state)
-        }
-
-    }
 
     fun updateZikr(
         zikrId: Int,
@@ -199,19 +255,30 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
+    fun playclick(context: Context){
+        val mediaPlayer = MediaPlayer.create(context, R.raw.click3)
+        mediaPlayer.setOnCompletionListener { it.release() }
+        mediaPlayer.start()
+    }
+
     fun toggleVibration() {
         _uiState.value = _uiState.value.copy(
             isVibrationOn = !_uiState.value.isVibrationOn
         )
-        // Add your vibration control logic here, e.g.:
-        if (_uiState.value.isVibrationOn) startVibration() else stopVibration()
+        coro.launch {
+            setVibrationState(if (_uiState.value.isVibrationOn) 1 else 0)
+        }
+
     }
 
         fun toggleSpeaker() {
         _uiState.value = _uiState.value.copy(
             isSpeakerOn = !_uiState.value.isSpeakerOn
         )
-        // Add your sound control logic here, e.g.:
+           coro.launch {
+               setSoundState(if (_uiState.value.isSpeakerOn) 1 else 0)
+           }
+
 
     }
 
@@ -241,14 +308,5 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-    private fun stopSound() {
-
-    }
-
-    private fun playSound(context: Context) {
-
-
-
-    }
 
 }
