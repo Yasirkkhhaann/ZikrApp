@@ -1,25 +1,45 @@
 import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-
-import com.example.zikrapp.R
 import com.example.zikrapp.data.Zikr
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import kotlinx.coroutines.flow.Flow
@@ -37,20 +57,22 @@ fun ZikrEditAddScreen(
     val dataBaseViewModel: DataBaseViewModel = viewModel()
 
 
-
     var zikrFlow by remember { mutableStateOf<Flow<Zikr?>?>(null) }
-        LaunchedEffect(zikrId) {
+    LaunchedEffect(zikrId) {
         zikrFlow = databaseViewModel.getZikrById(zikrId) // call suspend function inside coroutine
     }
 
     val zikr by zikrFlow?.collectAsState(initial = null) ?: mutableStateOf(null)
 
 
-
-    var zikrName by remember { mutableStateOf("") }
-    var zikrStart by remember { mutableStateOf("") }
-    var zikrEnd by remember { mutableStateOf("") }
-    var zikrDescription by remember { mutableStateOf("") }
+    var zikrName by rememberSaveable { mutableStateOf("") }
+    var isErrorInName by rememberSaveable { mutableStateOf(false) }
+    var zikrStart by rememberSaveable { mutableStateOf("") }
+    var isErrorInStart by rememberSaveable { mutableStateOf(false) }
+    var zikrEnd by rememberSaveable { mutableStateOf("") }
+    var isErrorInEnd by rememberSaveable { mutableStateOf(false) }
+    var zikrDescription by rememberSaveable { mutableStateOf("") }
+    var isErrorInDescription by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(zikr) {
         zikrName = zikr?.zikrName ?: ""
@@ -63,206 +85,255 @@ fun ZikrEditAddScreen(
     val zikrEndLimit = 9
     val zikrDescriptionLimit = 60
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0XFF1A1A1A))
-            .padding(horizontal = 36.dp)
+    Surface(
+        color = MaterialTheme.colorScheme.background
     ) {
-        // Banner/Header (reuse your composable here if you wish)
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text("Name:", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Thin), color = Color.White)
-        TextField(
-            value = zikrName,
-            onValueChange = {
-                if (it.length <= zikrNameLimit) zikrName = it else Toast.makeText(context, "Max $zikrNameLimit chars", Toast.LENGTH_SHORT).show()
-            },
-            textStyle = TextStyle(fontSize = 14.sp, color = Color.White),
-            modifier = Modifier.height(50.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0XFF262626),
-                unfocusedContainerColor = Color(0XFF262626),
-                cursorColor = Color.White,
-            ),
-            shape = RoundedCornerShape(10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text("Start:", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Thin), color = Color.White)
-        TextField(
-            value = zikrStart,
-            onValueChange = {
-                if (it.length <= zikrStartLimit) zikrStart = it else Toast.makeText(context, "Max $zikrStartLimit digits", Toast.LENGTH_SHORT).show()
-            },
-            textStyle = TextStyle(fontSize = 14.sp, color = Color.White),
-            modifier = Modifier.height(50.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0XFF262626),
-                unfocusedContainerColor = Color(0XFF262626),
-                cursorColor = Color.White,
-            ),
-            shape = RoundedCornerShape(10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text("End:", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Thin), color = Color.White)
-        TextField(
-            value = zikrEnd,
-            onValueChange = {
-                if (it.length <= zikrEndLimit) zikrEnd = it else Toast.makeText(context, "Max $zikrEndLimit digits", Toast.LENGTH_SHORT).show()
-            },
-            textStyle = TextStyle(fontSize = 14.sp, color = Color.White),
-            modifier = Modifier.height(50.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0XFF262626),
-                unfocusedContainerColor = Color(0XFF262626),
-                cursorColor = Color.White,
-            ),
-            shape = RoundedCornerShape(10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text("Description:", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Thin), color = Color.White)
-        TextField(
-            value = zikrDescription,
-            onValueChange = {
-                if (it.length <= zikrDescriptionLimit) zikrDescription = it else Toast.makeText(context, "Max $zikrDescriptionLimit chars", Toast.LENGTH_SHORT).show()
-            },
-            textStyle = TextStyle(fontSize = 14.sp, color = Color.White),
-            modifier = Modifier.height(90.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0XFF262626),
-                unfocusedContainerColor = Color(0XFF262626),
-                cursorColor = Color.White,
-            ),
-            shape = RoundedCornerShape(10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(36.dp),
+            verticalArrangement = Arrangement.Center,
         ) {
-            // Cancel button
-            Image(
-                painter = painterResource(id = R.drawable.cancel),
-                contentDescription = "Cancel",
-                modifier = Modifier.size(50.dp).clickable {
+            // Banner/Header (reuse your composable here if you wish)
+            Spacer(modifier = Modifier.height(20.dp))
 
-                    onCancel() // Navigate back to the list screen
+            val errorColor = MaterialTheme.colorScheme.error
 
-                }
+            ZikrInputField(
+                label = "Name",
+                value = zikrName,
+                onValueChange = {
+                    zikrName = it
+                    isErrorInName = false
+                },
+                isError = isErrorInName,
+                maxLength = zikrNameLimit,
+                onDone = {
+
+                },
+                isNumeric = false
+
             )
-            // Done button
-            Image(
-                painter = painterResource(id = R.drawable.done2),
-                contentDescription = "Done",
-                modifier = Modifier.size(50.dp).clickable {
-                    // Validate inputs
-                    if (zikrName.isBlank()) {
-                        Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show()
-                        return@clickable
-                    }
-                    val start = zikrStart.toIntOrNull() ?: 0
-                    val end = zikrEnd.toIntOrNull() ?: 0
-                    if (zikrStart.isBlank() || zikrEnd.isBlank()) {
-                        Toast.makeText(context, "Enter valid numbers for Start/End", Toast.LENGTH_SHORT).show()
-                        return@clickable
-                    }
-                    if (zikrDescription.isBlank()) {
-                        Toast.makeText(context, "Please enter a description", Toast.LENGTH_SHORT).show()
-                        return@clickable
-                    }
+            Spacer(modifier = Modifier.height(10.dp))
 
-                    if(zikrId == 0){
-                        dataBaseViewModel.addZikr(Zikr(zikrId,zikrName, zikrDescription,start, end, ))
-                        Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
-                    }
-                    if(zikrStart > zikrEnd){
-
-                        Toast.makeText(context, "Start should be smaller than End", Toast.LENGTH_SHORT).show()
-                        return@clickable
-                    }
-
-                    else {
-                        dataBaseViewModel.updateZikr(zikrId, zikrName, start, end, zikrDescription)
-                        Toast.makeText(context, "Zikr updated!", Toast.LENGTH_SHORT).show()
-                    }
-
-                    onDone() // Navigate back to the list screen
-
-                }
+            ZikrInputField(
+                label = "Start",
+                value = zikrStart,
+                onValueChange = {
+                    zikrStart = it
+                    isErrorInStart = false
+                },
+                isError = isErrorInStart,
+                maxLength = zikrStartLimit,
+                onDone = {},
+                isNumeric = true
             )
+
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ZikrInputField(
+                label = "End",
+                value = zikrEnd,
+                onValueChange = {
+
+                    isErrorInEnd = false
+                    zikrEnd = it
+                },
+                isError = isErrorInEnd,
+                maxLength = zikrEndLimit,
+                onDone = {},
+                isNumeric = true
+            )
+
+
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ZikrInputField(
+                label = "Description:",
+                value = zikrDescription,
+                onValueChange = {
+                    zikrDescription = it
+                    isErrorInDescription = false
+                },
+                isError = isErrorInDescription,
+                maxLength = zikrDescriptionLimit,
+                onDone = {},
+                isNumeric = false
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+
+                //Cancel Button
+
+                IconButton(modifier = Modifier.size(75.dp),
+                    onClick = { onCancel() },
+                    colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Icon(imageVector = Icons.Default.Close,tint = Color.White, contentDescription = "Close", modifier = Modifier.size(75.dp))
+                }
+
+
+                IconButton(modifier = Modifier.size(75.dp),
+                    onClick = { // Validate inputs
+                        if (zikrName.isBlank()) {
+                            Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT)
+                                .show()
+                            isErrorInName = true
+                            return@IconButton
+                        }
+                        val start = zikrStart.toIntOrNull() ?: 0
+
+                        if (zikrStart.isBlank()) {
+                            Toast.makeText(
+                                context,
+                                "Enter Any Number",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            isErrorInStart = true
+                            return@IconButton
+                        }
+                        val end = zikrEnd.toIntOrNull() ?: 0
+                        if (zikrEnd.isBlank()) {
+                            Toast.makeText(
+                                context,
+                                "Enter valid numbers for End",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            isErrorInEnd = true
+                            return@IconButton
+                        }
+                        if(start > end) {
+                            Toast.makeText(
+                                context,
+                                "Start Can't be greater than End",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            isErrorInEnd = true
+                            return@IconButton
+                        }
+
+                        if (end ==0) {
+                            Toast.makeText(
+                                context,
+                                "End Can't be 0",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            isErrorInEnd = true
+                            return@IconButton
+                        }
+                        if (zikrDescription.isBlank()) {
+                            Toast.makeText(
+                                context,
+                                "Please enter a description",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            isErrorInDescription = true
+                            return@IconButton
+                        }
+                        if(zikrId != 0) {
+                            dataBaseViewModel.updateZikr(
+                                zikrId,
+                                zikrName,
+                                start,
+                                end,
+                                zikrDescription
+                            )
+                            Toast.makeText(context, "Zikr updated!", Toast.LENGTH_SHORT).show()
+                        }
+
+                        if (zikrId == 0) {
+                            dataBaseViewModel.addZikr(
+                                Zikr(
+                                    zikrId,
+                                    zikrName,
+                                    zikrDescription,
+                                    start,
+                                    end,
+                                )
+                            )
+                            Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
+                        }
+
+                        onDone()
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Icon(imageVector = Icons.Default.Done, tint = Color.White, contentDescription = "Done",modifier = Modifier.size(75.dp),)
+                }
+            }
+
         }
     }
 }
 
-
-
-@Composable
-fun ZikrEditAddScreenBanner() {
-    ElevatedCard(
-        shape = RoundedCornerShape(bottomStart = 75.dp, bottomEnd = 75.dp),
-        colors = CardDefaults.cardColors(Color(0XFF262626)),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp,
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .size(150.dp)
-    ) {
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 20.dp)
-                .padding(top = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-
-            Text("EDIT", style = TextStyle(fontSize = 32.sp), color = Color(0XFF0675C4))
-            Text(" / ", style = TextStyle(fontSize = 32.sp), color = Color.White)
-            Text("ADD", style = TextStyle(fontSize = 32.sp), color = Color(0XFFFC6C38))
-            Text(" ZIKR", style = TextStyle(fontSize = 32.sp), color = Color(0XFF1C6615))
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 40.dp, top = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-
-            Row(modifier = Modifier.weight(1f)) {
-                Text(
-                    "Here you can edit or add you new Zikr ",
-                    style = TextStyle(fontSize = 14.sp),
-                    color = Color.White,
-                    fontWeight = FontWeight.Thin
-                )
-
-            }
-            Row(modifier = Modifier.weight(0.4f)) {
-                Image(
-                    painter = painterResource(id = R.drawable.editaddicon),
-                    contentDescription = "editaddicon",
-                    modifier = Modifier.padding(start = 10.dp)
-                )
-            }
-        }
-    }
-}
-
+//
 //@Preview
 //@Composable
 //fun ZikrEditAddScreenPreview() {
 //
-//    ZikrEditAddScreen(navController = NavController(LocalContext))
+//    ZikrEditAddScreen(onDone = {}, onCancel = {}, zikrId = 0, databaseViewModel = DataBaseViewModel())
 //}
+
+
+@Composable
+fun ZikrInputField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    isError: Boolean,
+    onDone: () -> Unit = {},
+    maxLength: Int,
+    isNumeric: Boolean = false
+) {
+    val context = LocalContext.current
+    val errorColor = MaterialTheme.colorScheme.error
+
+    Column {
+        Text(
+            label,
+            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Thin),
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = {
+                val isValid = if (isNumeric) it.all { char -> char.isDigit() } else true
+                if (it.length <= maxLength && isValid) {
+                    onValueChange(it)
+                } else {
+                    isError
+                    Toast.makeText(
+
+                        context,
+                        if (!isValid) "Enter numbers only" else "Max $maxLength chars",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            },
+            isError = isError,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = if (isError) errorColor else MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = if (isError) errorColor else MaterialTheme.colorScheme.onSurface,
+                cursorColor = if (isError) errorColor else MaterialTheme.colorScheme.primary
+            ),
+            textStyle = TextStyle(fontSize = 18.sp),
+            modifier = Modifier.fillMaxWidth().height(if (label == "Description:") 120.dp else 70.dp),
+            shape = RoundedCornerShape(10.dp),
+            singleLine = label != "Description:",
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { onDone() })
+        )
+    }
+}

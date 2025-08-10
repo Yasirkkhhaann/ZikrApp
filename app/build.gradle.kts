@@ -45,6 +45,8 @@ dependencies {
 
 
     implementation(libs.androidx.room.runtime)
+    implementation(libs.ads.mobile.sdk)
+    implementation(libs.androidx.ui.text.google.fonts)
 
     ksp(libs.androidx.room.compiler)
 

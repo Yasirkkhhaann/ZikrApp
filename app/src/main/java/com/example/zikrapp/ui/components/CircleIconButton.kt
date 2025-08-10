@@ -5,21 +5,25 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import com.example.compose.surfaceContainerHighDark
+import com.example.zikrapp.ui.theme1.ui.theme.IconBgTeal
 
 @Composable
-fun CircleIconButton(icon: Painter, onClick: () -> Unit, IconColor: Color = Color.White, bgColor: Color = Color(0xFF363636)) {
+fun CircleIconButton(icon: Painter, onClick: () -> Unit,) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
             .size(50.dp)
-            .background(bgColor, shape = CircleShape)
+            .background(color = IconBgTeal, shape = CircleShape),
+
     ) {
-        Icon(icon, contentDescription = null,tint = IconColor, modifier = Modifier.size(25.dp))
+        Icon(icon, contentDescription = null,tint = Color.White , modifier = Modifier.size(25.dp))
     }
 }
 

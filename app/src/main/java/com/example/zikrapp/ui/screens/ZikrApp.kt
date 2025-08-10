@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,16 +32,6 @@ sealed interface ZikrRoute {
     @Serializable
     data class ZikrEditAdd(val zikrId: Int) : ZikrRoute
 }
-//
-//
-//enum class ZikrScreen() {
-//
-//    ZikrCount,
-//    ZikrEditAdd,
-//    ZikrList
-//}
-
-
 
 @Composable
 fun ZikrApp(
@@ -77,7 +68,7 @@ fun ZikrApp(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(Color(0xFF1A1A1A))) {
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
         NavDisplay(
             backStack = backStack,
             onBack = { goBack() },

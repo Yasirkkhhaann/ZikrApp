@@ -9,20 +9,25 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
+import com.example.zikrapp.ui.theme1.ui.theme.TealBottom
+import com.example.zikrapp.ui.theme1.ui.theme.TealTop
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +38,7 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
                             navigatToCountsreen: () -> Unit,
     dataBaseViewModel: DataBaseViewModel = viewModel(),) {
     var expanded by remember { mutableStateOf(false) }
-
+    val uiState by dataBaseViewModel.uiState.collectAsState()
 
     val coroutine = CoroutineScope(Dispatchers.IO)
     Box(
@@ -45,44 +50,66 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
         IconButton(onClick = { expanded = !expanded },
             modifier = Modifier) {
             Icon(painter = painterResource(id = R.drawable.dropdown)
-                ,tint = Color.White, contentDescription = "Drop down icon",
+                ,tint = Color.Black, contentDescription = "Drop down icon",
                 modifier = Modifier.size(31.dp))
         }
+        val colors = arrayOf(
+
+
+
+            0.1f to MaterialTheme.colorScheme.surfaceVariant,
+            0.9f to MaterialTheme.colorScheme.primary,
+        )
+        val brush2 = Brush.verticalGradient(
+            colors = listOf(TealTop, TealBottom)
+        )
+        val brush = Brush.horizontalGradient(colorStops = colors)
+
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
 
             modifier = Modifier
-                .background(Color(0xff454040)),
+                .background(brush = brush2),
         ) {
             // First section
             DropdownMenuItem(
-                text = { Text("Continue    " , style = TextStyle(color = Color.White)) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.resource_continue), tint = Color.White, contentDescription = null,
+                text = { Text("Continue    " , color =  MaterialTheme.colorScheme.onSurface) },
+                leadingIcon = { Icon(painter = painterResource(id = R.drawable.resource_continue), tint = MaterialTheme.colorScheme.onSurface, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { expanded = false ;coroutine.launch { dataBaseViewModel.setLastZikr(zikrid) }; navigatToCountsreen() }
+                onClick = { expanded = false ;coroutine.launch { dataBaseViewModel.setLastZikr(zikrid) };dataBaseViewModel.updatelastZikrId(zikrid);dataBaseViewModel.updatesaveState(); navigatToCountsreen() }
             )
             DropdownMenuItem(
-                text = { Text("Edit    ", style = TextStyle(color = Color.White)) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.edit), tint = Color.White, contentDescription = null,
+                text = { Text("Edit    ", color =  MaterialTheme.colorScheme.onSurface) },
+                leadingIcon = { Icon(painter = painterResource(id = R.drawable.edit), tint = MaterialTheme.colorScheme.onSurface, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = {expanded = false ; onEditZikr(zikrid) }
+                onClick = {expanded = false ; onEditZikr(zikrid);dataBaseViewModel.updatesaveState() }
             )
 
             // Second section
             DropdownMenuItem(
-                text = { Text("Delete    ", style = TextStyle(color = Color.White)) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.delete), tint = Color.White, contentDescription = null,
+                text = { Text("Delete    ", color =  MaterialTheme.colorScheme.onSurface) },
+                leadingIcon = { Icon(painter = painterResource(id = R.drawable.delete), tint = MaterialTheme.colorScheme.onSurface, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = {expanded = false ; dataBaseViewModel.deleteZikr(zikrid) }
+                onClick = {expanded = false ;coroutine.launch  { if(zikrid == uiState.lastZikrId){
+                    dataBaseViewModel.setLastZikr(0)
+                } else{
+                    dataBaseViewModel.setLastZikr(zikrid) }
+                }; if(zikrid == uiState.lastZikrId){
+                    dataBaseViewModel.updatelastZikrId(0)
+                } else{
+                    dataBaseViewModel.updatelastZikrId(zikrid)
+                };
+                    dataBaseViewModel.deleteZikr(zikrid);
+                    ;dataBaseViewModel.updatesaveState() }
             )
 
             // Third section
             DropdownMenuItem(
-                text = { Text("Reset    ", style = TextStyle(color = Color.White)) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.reset), tint = Color.White, contentDescription = null,
+                text = { Text("Reset    ",color =  MaterialTheme.colorScheme.onSurface) },
+                leadingIcon = { Icon(painter = painterResource(id = R.drawable.reset), tint = MaterialTheme.colorScheme.onSurface, contentDescription = null,
                     modifier = Modifier.size(15.dp)) },
-                onClick = { expanded = false ; dataBaseViewModel.resetZikr(zikrid) }
+                onClick = { expanded = false ; dataBaseViewModel.resetZikr(zikrid);dataBaseViewModel.updatesaveState()  }
             )
         }
     }

@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.compose.AppTheme
 import com.example.zikrapp.ui.screens.ZikrApp
-import com.example.zikrapp.ui.theme.ZikrAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            ZikrAppTheme {
+            AppTheme {
 
                 ZikrApp()
             }
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ZikrAppTheme {
+    AppTheme  {
         ZikrApp()
     }
 }

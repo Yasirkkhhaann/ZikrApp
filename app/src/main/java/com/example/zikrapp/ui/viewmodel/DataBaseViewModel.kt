@@ -2,6 +2,7 @@ package com.example.zikrapp.ui.viewmodel
 
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.zikrapp.R
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,7 +34,49 @@ class DataBaseViewModel : ViewModel() {
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 
-        fun updatelastZikrId(id:Int){
+    init
+    {
+        viewModelScope.launch {
+        val zikrlastid = getLastZikrId().first()?: 0
+            val speakerState = getSoundState().first()?:1
+            val vibrationState = getVibrationState().first()?:1
+
+            updatelastZikrId(zikrlastid)
+            setStateForspeaker(speakerState)
+            setStateForvibration(vibrationState)
+            if(zikrlastid == 0){
+                _uiState.update {
+                    it.copy(
+                        saveIconEnabled = true
+                    )
+                }
+            }
+            else{
+                _uiState.update {
+                    it.copy(
+                        saveIconEnabled = false
+                    )
+                }
+            }
+    }
+    }
+    fun updatesaveState(){
+        if(_uiState.value.lastZikrId == 0){
+            _uiState.update {
+                it.copy(
+                    saveIconEnabled = true
+                )
+            }
+        }
+        else{
+            _uiState.update {
+                it.copy(
+                    saveIconEnabled = false
+                )
+            }
+        }
+    }
+    fun updatelastZikrId(id: Int) {
         _uiState.update {
             it.copy(
                 lastZikrId = id
@@ -42,10 +86,9 @@ class DataBaseViewModel : ViewModel() {
     }
 
 
+    fun setStateForspeaker(soundState: Int) {
 
-    fun setStateForspeaker(soundState:Int){
-
-        if(soundState == 1){
+        if (soundState == 1) {
             _uiState.update {
                 it.copy(
 
@@ -53,7 +96,7 @@ class DataBaseViewModel : ViewModel() {
                 )
             }
         }
-        if(soundState == 0){
+        if (soundState == 0) {
             _uiState.update {
                 it.copy(
 
@@ -66,9 +109,10 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-    fun setStateForvibration(vibrationState:Int){
 
-        if(vibrationState == 1){
+    fun setStateForvibration(vibrationState: Int) {
+
+        if (vibrationState == 1) {
             _uiState.update {
                 it.copy(
 
@@ -76,7 +120,7 @@ class DataBaseViewModel : ViewModel() {
                 )
             }
         }
-        if(vibrationState == 0){
+        if (vibrationState == 0) {
             _uiState.update {
                 it.copy(
 
@@ -89,8 +133,14 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-        fun loadZikrBounds(start: Int, end: Int) {
-        _uiState.update { it.copy(countCurrent = start, countTotal = end) }
+    fun loadZikrBounds(start: Int, end: Int) {
+
+
+        _uiState.update {
+
+            it.copy(
+
+            countCurrent = start, countTotal = end) }
     }
 
 
@@ -134,7 +184,7 @@ class DataBaseViewModel : ViewModel() {
         }
     }
 
-    fun resetZikr(id:Int){
+    fun resetZikr(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             ZikrDao.resetZikr(id)
         }
@@ -146,7 +196,6 @@ class DataBaseViewModel : ViewModel() {
         }
 
     }
-
 
 
     fun updateZikr(
@@ -167,32 +216,27 @@ class DataBaseViewModel : ViewModel() {
 
     fun incrementCount() {
 
-        if(_uiState.value.countCurrent < _uiState.value.countTotal){
+        if (_uiState.value.countCurrent < _uiState.value.countTotal) {
 
 
-
-     _uiState.update {
+            _uiState.update {
                 it.copy(
                     countCurrent = it.countCurrent + 1
                 )
             }
 
 
-            updatezikrbycount(_uiState.value.lastZikrId,_uiState.value.countCurrent)
+            updatezikrbycount(_uiState.value.lastZikrId, _uiState.value.countCurrent)
 
 
-        }
-
-        else if(_uiState.value.countTotal == 0){
+        } else if (_uiState.value.countTotal == 0) {
             _uiState.update {
                 it.copy(
                     countCurrent = it.countCurrent + 1,
 
                     )
             }
-        }
-
-        else{
+        } else {
             showZikrCompletedDialog()
         }
     }
@@ -213,7 +257,7 @@ class DataBaseViewModel : ViewModel() {
         }
     }
 
-        fun dismissZikrCompletedDialog() {
+    fun dismissZikrCompletedDialog() {
         _uiState.update { currentState ->
             currentState.copy(showZikrCompletedDialog = false)
         }
@@ -225,9 +269,9 @@ class DataBaseViewModel : ViewModel() {
         }
 
 
-
     }
-    fun restartZikrAfterCompletion(){
+
+    fun restartZikrAfterCompletion() {
         _uiState.update {
             it.copy(
                 countCurrent = 0,
@@ -238,7 +282,7 @@ class DataBaseViewModel : ViewModel() {
 
         }
 
-        updatezikrbycount(_uiState.value.lastZikrId,_uiState.value.countCurrent)
+        updatezikrbycount(_uiState.value.lastZikrId, _uiState.value.countCurrent)
 
 
     }
@@ -251,12 +295,12 @@ class DataBaseViewModel : ViewModel() {
                 // Potentially reset other relevant states if needed
             )
         }
-        updatezikrbycount(_uiState.value.lastZikrId,_uiState.value.countCurrent)
+        updatezikrbycount(_uiState.value.lastZikrId, _uiState.value.countCurrent)
 
     }
 
-    fun playclick(context: Context){
-        val mediaPlayer = MediaPlayer.create(context, R.raw.click3)
+    fun playclick(context: Context) {
+        val mediaPlayer = MediaPlayer.create(context, R.raw.click11)
         mediaPlayer.setOnCompletionListener { it.release() }
         mediaPlayer.start()
     }
@@ -271,13 +315,13 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-        fun toggleSpeaker() {
+    fun toggleSpeaker() {
         _uiState.value = _uiState.value.copy(
             isSpeakerOn = !_uiState.value.isSpeakerOn
         )
-           coro.launch {
-               setSoundState(if (_uiState.value.isSpeakerOn) 1 else 0)
-           }
+        coro.launch {
+            setSoundState(if (_uiState.value.isSpeakerOn) 1 else 0)
+        }
 
 
     }
@@ -290,7 +334,7 @@ class DataBaseViewModel : ViewModel() {
         if (_uiState.value.islock) startLockLogic() else stopLockLogic()
     }
 
-    fun startThemLogic(){
+    fun startThemLogic() {
 
     }
 

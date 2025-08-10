@@ -8,13 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -42,51 +43,43 @@ fun ZikrListScreen(onAddZikr: () -> Unit, onEditZikr: (Int) -> Unit,
 
 
 
-    Scaffold(
+    Scaffold( containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
-            FloatingActionButton(onClick = { onAddZikr() },
+            FloatingActionButton(onClick = { onAddZikr()},
 
                  modifier = Modifier.padding(end = 10.dp,bottom = 10.dp)
                     ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         }
-    ) { innerPadding ->
-
-        Column(
-            modifier = Modifier.padding(innerPadding).background(Color(0xff635f5f)).verticalScroll(rememberScrollState()),
-        ) {
-
-            ZikrListBanner()
-
-            Spacer(modifier = Modifier.height(25.dp))
+    ) {
 
 
+        Column (modifier = Modifier.padding(it)) {
 
-            zikrList?.let {
+
+           ZikrListBanner()
+Spacer(modifier = Modifier.height(10.dp))
+
+
+            zikrList.let {
+
                 LazyColumn(
-                    modifier = Modifier.height(425.dp),
                     contentPadding = PaddingValues(bottom = 30.dp)
                 ) {
-                    items(zikrList.size) { it
-                        val zikr = zikrList[it]
-
+                    items(zikrList) { zikr ->
                         Spacer(modifier = Modifier.height(10.dp))
-                        ZikrListItemCard(onEditZikr,navigatToCountsreen,zikr = zikr,dbZikrDataModel)
+                        ZikrListItemCard(
+                            onEditZikr = onEditZikr,
+                            navigatToCountsreen = navigatToCountsreen,
+                            zikr = zikr,
+                            dataBaseViewModel = dbZikrDataModel
+                        )
                     }
-
-
                 }
 
-            } ?: Text(
-                text = "No Data",
-                style = TextStyle(
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
+
+            }
 
         }
     }

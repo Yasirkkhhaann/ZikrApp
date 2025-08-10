@@ -39,7 +39,7 @@ fun BottomAppBar(modifier: Modifier = Modifier,onNavigateList: () -> Unit, zikrC
                     onClick = { zikrControlModel.toggleVibration(); })
 
                 CircleIconButton(
-                    icon = painterResource(id = R.drawable.theme2),
+                    icon = painterResource(id = R.drawable.list2),
                     onClick = { onNavigateList()  })
             }
 
