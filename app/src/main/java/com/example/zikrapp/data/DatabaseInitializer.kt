@@ -22,7 +22,7 @@ class DatabaseInitializer : Application()  {
             ZikrDatabase::class.java,
             ZikrDatabase.DATABASE_NAME
 
-        ).createFromAsset("database/zikrs2.db").build()
+        ).createFromAsset("database/zikrtest1.db").build()
     }
 
 

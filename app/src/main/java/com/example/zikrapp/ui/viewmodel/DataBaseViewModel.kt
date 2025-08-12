@@ -2,7 +2,10 @@ package com.example.zikrapp.ui.viewmodel
 
 import android.content.Context
 import android.media.MediaPlayer
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.zikrapp.R
@@ -34,41 +37,120 @@ class DataBaseViewModel : ViewModel() {
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 
-    init
-    {
+    init {
         viewModelScope.launch {
-        val zikrlastid = getLastZikrId().first()?: 0
-            val speakerState = getSoundState().first()?:1
-            val vibrationState = getVibrationState().first()?:1
+            //load countstate for old zikr or new
+            val zikrlastid = getLastZikrId().first() ?: 0
 
-            updatelastZikrId(zikrlastid)
-            setStateForspeaker(speakerState)
-            setStateForvibration(vibrationState)
             if(zikrlastid == 0){
+
                 _uiState.update {
                     it.copy(
-                        saveIconEnabled = true
+                        isLoadingforNew = true,
+                        saveIconEnabled = true,
+                        lastZikrId = zikrlastid,
                     )
                 }
+
+
             }
-            else{
+            else {
+
+                _uiState.update {
+                    it.copy(
+                        isLoadingforNew = false,
+                        saveIconEnabled = false,
+                        lastZikrId = zikrlastid
+                    )
+                }
+
+
+            }
+
+
+
+
+            val speakerState = getSoundState().first() ?: 1
+            val vibrationState = getVibrationState().first() ?: 1
+            val notsaveCount = getNotSaveLastCount().first() ?: 0
+
+            updatelastZikrId(zikrlastid)
+            if (zikrlastid == 0) {
+
+
+                _uiState.update {
+                    it.copy(
+                        saveIconEnabled = true,
+                        countCurrent = notsaveCount
+
+                    )
+                }
+            } else {
                 _uiState.update {
                     it.copy(
                         saveIconEnabled = false
                     )
                 }
             }
-    }
-    }
-    fun updatesaveState(){
-        if(_uiState.value.lastZikrId == 0){
-            _uiState.update {
-                it.copy(
-                    saveIconEnabled = true
-                )
+
+            setStateForspeaker(speakerState)
+            setStateForvibration(vibrationState)
+            if (zikrlastid == 0) {
+                _uiState.update {
+                    it.copy(
+                        saveIconEnabled = true
+                    )
+                }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        saveIconEnabled = false
+                    )
+                }
             }
         }
-        else{
+    }
+
+    suspend fun updateStateInGeneral(){
+        val zikrlastid = getLastZikrId().first() ?: 0
+
+        if(zikrlastid == 0){
+
+            _uiState.update {
+                it.copy(
+                    isLoadingforNew = true,
+                    saveIconEnabled = true,
+                    lastZikrId = zikrlastid,
+                )
+            }
+
+
+        }
+        else {
+
+            _uiState.update {
+                it.copy(
+                    isLoadingforNew = false,
+                    saveIconEnabled = false,
+                    lastZikrId = zikrlastid
+                )
+            }
+
+
+        }
+    }
+
+    suspend fun updatesaveState() {
+        if (_uiState.value.lastZikrId == 0) {
+            val notsaveCount = getNotSaveLastCount().first() ?: 0
+
+            _uiState.update {
+                it.copy(
+                    saveIconEnabled = true, countCurrent = notsaveCount
+
+                )
+            }
+        } else {
             _uiState.update {
                 it.copy(
                     saveIconEnabled = false
@@ -76,6 +158,7 @@ class DataBaseViewModel : ViewModel() {
             }
         }
     }
+
     fun updatelastZikrId(id: Int) {
         _uiState.update {
             it.copy(
@@ -86,6 +169,53 @@ class DataBaseViewModel : ViewModel() {
     }
 
 
+    fun updatezikrbycount(id: Int, count: Int) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            ZikrDao.updatebyidcount(id, count)
+
+        }
+    }
+
+    fun updateZikr(
+        zikrId: Int,
+        zikrName: String,
+        Start: Int,
+        End: Int,
+        zikrDescription: String
+    ) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            ZikrDao.updateZikr(zikrId, zikrName, Start, End, zikrDescription)
+
+        }
+    }
+
+    fun updateNotSavedCount(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            ZikrDao.updateNotSaveLastCount(id)
+
+        }
+    }
+
+    //Load Operations
+
+    fun loadZikrBounds(start: Int, end: Int) {
+
+
+        _uiState.update {
+
+            it.copy(
+
+                countCurrent = start, countTotal = end
+            )
+        }
+    }
+
+
+    //Set Operations
     fun setStateForspeaker(soundState: Int) {
 
         if (soundState == 1) {
@@ -133,27 +263,9 @@ class DataBaseViewModel : ViewModel() {
 
     }
 
-    fun loadZikrBounds(start: Int, end: Int) {
-
-
-        _uiState.update {
-
-            it.copy(
-
-            countCurrent = start, countTotal = end) }
-    }
-
-
-    fun getLastZikrId(): Flow<Int?> = ZikrDao.getLastZikrId()
-
-    fun getSoundState(): Flow<Int?> = ZikrDao.getSoundState()
-
     suspend fun setSoundState(id: Int) = withContext(Dispatchers.IO) {
         ZikrDao.setSoundState(id)
     }
-
-    fun getVibrationState(): Flow<Int?> = ZikrDao.getVibrationState()
-
     suspend fun setVibrationState(id: Int) = withContext(Dispatchers.IO) {
         ZikrDao.setVibrationState(id)
     }
@@ -162,25 +274,53 @@ class DataBaseViewModel : ViewModel() {
         ZikrDao.setLastZikr(id)
     }
 
+    fun setzikrIdForDelete(id: Int) {
 
+        _uiState.update {
+            it.copy(
+                setzikrIdForDelete = id
+            )
+        }
+    }
+
+
+    //Get Operations
+
+    fun getLastZikrId(): Flow<Int?> = ZikrDao.getLastZikrId()
+    fun getNotSaveLastCount(): Flow<Int?> = ZikrDao.getNotSaveLastCount()
+    fun getSoundState(): Flow<Int?> = ZikrDao.getSoundState()
+    fun getVibrationState(): Flow<Int?> = ZikrDao.getVibrationState()
     suspend fun getZikrById(id: Int): Flow<Zikr?> = withContext(Dispatchers.IO) {
         ZikrDao.getZikrById(id)
     }
 
-    fun updatezikrbycount(id: Int, count: Int) {
 
+
+    fun deleteZikr(id: Int) {
+        if(id == uiState.value.lastZikrId){
+            updateNotSavedCount(0)
+            loadCountforOldZikr()
+        }
         viewModelScope.launch(Dispatchers.IO) {
+            ZikrDao.deleteZikr(id)
 
-            ZikrDao.updatebyidcount(id, count)
 
         }
     }
 
-    fun deleteZikr(zikrId: Int) {
+    fun loadCountforOldZikr(){
+        _uiState.update {
+            it.copy(
+                isLoadingforNew = true
+            )
+        }
+    }
 
-        viewModelScope.launch(Dispatchers.IO) {
-
-            ZikrDao.deleteZikr(zikrId)
+    fun unloadCountforOldZikr(){
+        _uiState.update {
+            it.copy(
+                isLoadingforNew = false
+            )
         }
     }
 
@@ -198,23 +338,11 @@ class DataBaseViewModel : ViewModel() {
     }
 
 
-    fun updateZikr(
-        zikrId: Int,
-        zikrName: String,
-        Start: Int,
-        End: Int,
-        zikrDescription: String
-    ) {
-
-        viewModelScope.launch(Dispatchers.IO) {
-
-            ZikrDao.updateZikr(zikrId, zikrName, Start, End, zikrDescription)
-
-        }
-    }
-
-
     fun incrementCount() {
+
+        if (_uiState.value.lastZikrId == 0) {
+            updateNotSavedCount(_uiState.value.countCurrent)
+        }
 
         if (_uiState.value.countCurrent < _uiState.value.countTotal) {
 
@@ -225,11 +353,10 @@ class DataBaseViewModel : ViewModel() {
                 )
             }
 
-
             updatezikrbycount(_uiState.value.lastZikrId, _uiState.value.countCurrent)
 
 
-        } else if (_uiState.value.countTotal == 0) {
+        } else if (_uiState.value.countingScreenLoadForNewZikr) {
             _uiState.update {
                 it.copy(
                     countCurrent = it.countCurrent + 1,
@@ -249,11 +376,53 @@ class DataBaseViewModel : ViewModel() {
         }
     }
 
+
+    fun showConfirmationDialogueToDeleteActiveZikr() {
+        _uiState.update {
+
+            it.copy(
+                showConfirmationDialogueToDeleteActiveZikr = true
+            )
+        }
+    }
+
+
+    fun showDeleltDialog() {
+        _uiState.update {
+            it.copy(
+                showDeleleDialog = true
+            )
+        }
+    }
+
     fun showResetConfirmationDialog() {
         _uiState.update {
             it.copy(
                 showResetConfirmationDialog = true
             )
+        }
+    }
+
+    fun showZikrNotSavedDialog() {
+        _uiState.update {
+            it.copy(
+                showZikrNotSavedDialog = true
+            )
+        }
+    }
+
+    fun dismissZikrNotSavedDialog() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                showZikrNotSavedDialog = false,
+                isLoadingforNew = true
+            )
+        }
+    }
+
+    fun dismissDeleltDialog() {
+        _uiState.update { currentState ->
+            currentState.copy(showDeleleDialog = false)
         }
     }
 

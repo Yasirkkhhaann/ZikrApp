@@ -50,7 +50,9 @@ fun ZikrEditAddScreen(
     onDone: () -> Unit,
     onCancel: () -> Unit,
     databaseViewModel: DataBaseViewModel = viewModel(),
-    zikrId: Int
+    zikrId: Int,
+    notSaveCount:Int?
+
 ) {
     val context = LocalContext.current
 
@@ -58,8 +60,11 @@ fun ZikrEditAddScreen(
 
 
     var zikrFlow by remember { mutableStateOf<Flow<Zikr?>?>(null) }
-    LaunchedEffect(zikrId) {
-        zikrFlow = databaseViewModel.getZikrById(zikrId) // call suspend function inside coroutine
+    LaunchedEffect(zikrId,) {
+
+            zikrFlow = databaseViewModel.getZikrById(zikrId) // call suspend function inside coroutine
+
+
     }
 
     val zikr by zikrFlow?.collectAsState(initial = null) ?: mutableStateOf(null)
@@ -74,9 +79,14 @@ fun ZikrEditAddScreen(
     var zikrDescription by rememberSaveable { mutableStateOf("") }
     var isErrorInDescription by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(zikr) {
+    LaunchedEffect(zikr,notSaveCount) {
+        if(notSaveCount == null){
+            zikrStart = 50.toString()
+        }
         zikrName = zikr?.zikrName ?: ""
-        zikrStart = zikr?.zikrCountStart?.toString() ?: ""
+        zikrStart = if(notSaveCount != null) {
+            notSaveCount.toString()
+        } else {zikr?.zikrCountStart?.toString() ?: ""}
         zikrEnd = zikr?.zikrCountEnd?.toString() ?: ""
         zikrDescription = zikr?.zikrDescription ?: ""
     }
@@ -97,7 +107,6 @@ fun ZikrEditAddScreen(
             // Banner/Header (reuse your composable here if you wish)
             Spacer(modifier = Modifier.height(20.dp))
 
-            val errorColor = MaterialTheme.colorScheme.error
 
             ZikrInputField(
                 label = "Name",
@@ -122,6 +131,7 @@ fun ZikrEditAddScreen(
                 onValueChange = {
                     zikrStart = it
                     isErrorInStart = false
+                    isErrorInEnd = false
                 },
                 isError = isErrorInStart,
                 maxLength = zikrStartLimit,
@@ -138,6 +148,7 @@ fun ZikrEditAddScreen(
                 onValueChange = {
 
                     isErrorInEnd = false
+                    isErrorInStart = false
                     zikrEnd = it
                 },
                 isError = isErrorInEnd,
@@ -210,6 +221,7 @@ fun ZikrEditAddScreen(
                                 Toast.LENGTH_SHORT
                             ).show()
                             isErrorInEnd = true
+
                             return@IconButton
                         }
                         if(start > end) {
@@ -219,6 +231,7 @@ fun ZikrEditAddScreen(
                                 Toast.LENGTH_SHORT
                             ).show()
                             isErrorInEnd = true
+                            isErrorInStart = true
                             return@IconButton
                         }
 
@@ -262,6 +275,7 @@ fun ZikrEditAddScreen(
                                 )
                             )
                             Toast.makeText(context, "Zikr added!", Toast.LENGTH_SHORT).show()
+                            dataBaseViewModel.updateNotSavedCount(0)
                         }
 
                         onDone()

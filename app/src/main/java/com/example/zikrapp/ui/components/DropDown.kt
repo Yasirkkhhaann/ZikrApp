@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.R
@@ -34,9 +33,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
-                            navigatToCountsreen: () -> Unit,
-    dataBaseViewModel: DataBaseViewModel = viewModel(),) {
+fun DropdownMenuWithDetails(
+    onEditZikr: (Int) -> Unit, zikrid: Int,
+    navigatToCountsreen: () -> Unit,
+    dataBaseViewModel: DataBaseViewModel = viewModel(),
+) {
     var expanded by remember { mutableStateOf(false) }
     val uiState by dataBaseViewModel.uiState.collectAsState()
 
@@ -47,14 +48,18 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
 
         contentAlignment = Alignment.TopStart
     ) {
-        IconButton(onClick = { expanded = !expanded },
-            modifier = Modifier) {
-            Icon(painter = painterResource(id = R.drawable.dropdown)
-                ,tint = Color.Black, contentDescription = "Drop down icon",
-                modifier = Modifier.size(31.dp))
+        IconButton(
+            onClick = { expanded = !expanded },
+            modifier = Modifier
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.dropdown),
+                tint = Color.Black,
+                contentDescription = "Drop down icon",
+                modifier = Modifier.size(31.dp)
+            )
         }
         val colors = arrayOf(
-
 
 
             0.1f to MaterialTheme.colorScheme.surfaceVariant,
@@ -72,44 +77,94 @@ fun DropdownMenuWithDetails(onEditZikr: (Int) -> Unit,zikrid: Int,
             modifier = Modifier
                 .background(brush = brush2),
         ) {
+
+//            onClick = { if(uiState.lastZikrId == 0){
+//                dbZikrDataModel.showZikrNotSavedDialog()
+//            } else onAddZikr()}
+
             // First section
             DropdownMenuItem(
-                text = { Text("Continue    " , color =  MaterialTheme.colorScheme.onSurface) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.resource_continue), tint = MaterialTheme.colorScheme.onSurface, contentDescription = null,
-                    modifier = Modifier.size(15.dp)) },
-                onClick = { expanded = false ;coroutine.launch { dataBaseViewModel.setLastZikr(zikrid) };dataBaseViewModel.updatelastZikrId(zikrid);dataBaseViewModel.updatesaveState(); navigatToCountsreen() }
-            )
+                text = { Text("Continue    ", color = MaterialTheme.colorScheme.onSurface) },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.resource_continue),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = null,
+                        modifier = Modifier.size(15.dp)
+                    )
+                },
+                onClick = {
+                    expanded = false;
+
+                    if(uiState.isLoadingforNew){
+                        dataBaseViewModel.showZikrNotSavedDialog()
+                    }
+
+                    coroutine.launch {
+                    dataBaseViewModel.setLastZikr(zikrid);
+                    dataBaseViewModel.updatesaveState()
+                };
+                    dataBaseViewModel.updatelastZikrId(zikrid);
+                    dataBaseViewModel.unloadCountforOldZikr();
+                    dataBaseViewModel.updateNotSavedCount(0)
+                    navigatToCountsreen()
+                })
             DropdownMenuItem(
-                text = { Text("Edit    ", color =  MaterialTheme.colorScheme.onSurface) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.edit), tint = MaterialTheme.colorScheme.onSurface, contentDescription = null,
-                    modifier = Modifier.size(15.dp)) },
-                onClick = {expanded = false ; onEditZikr(zikrid);dataBaseViewModel.updatesaveState() }
+                text = { Text("Edit    ", color = MaterialTheme.colorScheme.onSurface) },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.edit),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = null,
+                        modifier = Modifier.size(15.dp)
+                    )
+                },
+                onClick = {
+                    expanded =
+                        false;
+                    if(uiState.isLoadingforNew){
+                        dataBaseViewModel.showZikrNotSavedDialog()
+                    }
+                    onEditZikr(zikrid);
+                    dataBaseViewModel.updateNotSavedCount(0)
+                    coroutine.launch { dataBaseViewModel.updatesaveState() }
+                }
             )
 
             // Second section
             DropdownMenuItem(
-                text = { Text("Delete    ", color =  MaterialTheme.colorScheme.onSurface) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.delete), tint = MaterialTheme.colorScheme.onSurface, contentDescription = null,
-                    modifier = Modifier.size(15.dp)) },
-                onClick = {expanded = false ;coroutine.launch  { if(zikrid == uiState.lastZikrId){
-                    dataBaseViewModel.setLastZikr(0)
-                } else{
-                    dataBaseViewModel.setLastZikr(zikrid) }
-                }; if(zikrid == uiState.lastZikrId){
-                    dataBaseViewModel.updatelastZikrId(0)
-                } else{
-                    dataBaseViewModel.updatelastZikrId(zikrid)
-                };
-                    dataBaseViewModel.deleteZikr(zikrid);
-                    ;dataBaseViewModel.updatesaveState() }
+                text = { Text("Delete    ", color = MaterialTheme.colorScheme.onSurface) },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.delete),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = null,
+                        modifier = Modifier.size(15.dp)
+                    )
+                },
+                onClick = {
+                    expanded = false;
+
+                    dataBaseViewModel.setzikrIdForDelete(zikrid)
+                    dataBaseViewModel.showDeleltDialog()
+                }
             )
 
             // Third section
             DropdownMenuItem(
-                text = { Text("Reset    ",color =  MaterialTheme.colorScheme.onSurface) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.reset), tint = MaterialTheme.colorScheme.onSurface, contentDescription = null,
-                    modifier = Modifier.size(15.dp)) },
-                onClick = { expanded = false ; dataBaseViewModel.resetZikr(zikrid);dataBaseViewModel.updatesaveState()  }
+                text = { Text("Reset    ", color = MaterialTheme.colorScheme.onSurface) },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.reset),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = null,
+                        modifier = Modifier.size(15.dp)
+                    )
+                },
+                onClick = {
+                    expanded =
+                        false; dataBaseViewModel.resetZikr(zikrid);coroutine.launch { dataBaseViewModel.updatesaveState() }
+                }
             )
         }
     }

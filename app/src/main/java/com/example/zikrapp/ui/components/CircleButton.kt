@@ -1,9 +1,7 @@
 package com.example.zikrapp.ui.components
 
 import android.os.Build
-import android.view.RoundedCorner
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
@@ -20,11 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -37,13 +30,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawScopeMarker
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -125,7 +115,7 @@ fun CustomComponent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                EmbeddedElements(
+                CountingMain(
                     bigTextFontSize = bigTextFontSize,
                     colorForCountbtn = colorForCountbtn
                 )
@@ -182,52 +172,7 @@ fun DrawScope.foregroundIndicator(
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun EmbeddedElements(
-    bigTextFontSize: TextUnit,
-    zikrControlModel: DataBaseViewModel = viewModel(),
-    colorForCountbtn: Color
-) {
-    val uiState by zikrControlModel.uiState.collectAsState()
 
-    val context = LocalContext.current
-
-    val interactionSource = remember { MutableInteractionSource() }
-    Box(
-        Modifier.padding(40.dp).fillMaxSize()
-            .background(color = colorForCountbtn, shape = CircleShape)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-            ) {
-
-
-                if (uiState.isSpeakerOn) {
-                    if (uiState.countCurrent != uiState.countTotal) {
-                        zikrControlModel.playclick(context)
-                    }
-
-                }
-                if (uiState.isVibrationOn) {
-                    if (uiState.countCurrent != uiState.countTotal) {
-                        Vibration().vibratee(context, 90)
-                    }
-                };
-                zikrControlModel.incrementCount();
-            }) {
-
-
-        Text(
-            text = "Count",
-            fontSize = bigTextFontSize,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Center),
-            color = MaterialTheme.colorScheme.onPrimary
-        )
-    }
-}
 
 
 //@Composable

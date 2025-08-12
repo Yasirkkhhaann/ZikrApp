@@ -2,14 +2,22 @@ package com.example.zikrapp.data
 
 
 
-import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ZikrDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addZikr(zikr: Zikr)
+
+    @Query("SELECT notSaveCount FROM zikr_state where id = 1 limit 1")
+    fun getNotSaveLastCount(): Flow<Int?>
+
+    @Query("Update zikr_state set notSaveCount = :count where id = 1")
+    fun updateNotSaveLastCount(count: Int)
 
     @Query("SELECT * FROM zikr_table WHERE zikrId = :id")
     fun getZikrById(id: Int): Flow<Zikr?>

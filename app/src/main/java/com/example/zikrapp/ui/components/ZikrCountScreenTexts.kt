@@ -3,14 +3,18 @@ package com.example.zikrapp.ui.components
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zikrapp.ui.theme1.ui.theme.PrimaryTextWhite
 import com.example.zikrapp.ui.theme1.ui.theme.SecondaryTextMint
+import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 
 
 @Composable
@@ -32,9 +36,10 @@ fun ZikrNote(modifier: Modifier = Modifier,zikrDescription: String) {
 }
 
 @Composable
-fun ZikrCountStatus(zikrStart: Int,zikrEnd: Int) {
+fun ZikrCountStatus(zikrStart: Int,zikrEnd: Int,zikrControlModel: DataBaseViewModel = viewModel(),) {
+    val uiState by zikrControlModel.uiState.collectAsState()
 
-    Text(" ${zikrStart} / ${if(zikrEnd==0) " ∞ " else zikrEnd}",fontSize = 32.sp,color = Color.White)
+    Text(" ${zikrStart} / ${if(uiState.isLoadingforNew) " ∞ " else zikrEnd}",fontSize = 32.sp,color = Color.White)
 }
 
 

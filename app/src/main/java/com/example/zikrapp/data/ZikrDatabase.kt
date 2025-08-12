@@ -10,7 +10,7 @@ import com.example.zikrapp.data.ZikrStateee
 
 
 
-@Database(entities = [Zikr::class, ZikrStateee::class], version = 3)
+@Database(entities = [Zikr::class, ZikrStateee::class], version = 4)
 abstract class ZikrDatabase : RoomDatabase() {
 
     companion object {

@@ -120,7 +120,7 @@ fun ZikrAlertDialog(
 //@Composable
 //fun BrushAlertDialogPreview() {
 //    BrushAlertDialog
-//@Preview
+@Preview
 @Composable
 fun AlertDialogExamplePreview() {
     ZikrAlertDialog(

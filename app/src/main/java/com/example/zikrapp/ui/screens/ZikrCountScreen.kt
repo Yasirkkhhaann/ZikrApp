@@ -43,6 +43,7 @@ import com.example.zikrapp.ui.theme1.ui.theme.TealBottom
 import com.example.zikrapp.ui.theme1.ui.theme.TealTop
 import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 @SuppressLint(
     "UnrememberedMutableState", "CoroutineCreationDuringComposition",
@@ -50,6 +51,7 @@ import kotlinx.coroutines.flow.Flow
 )
 @Composable
 fun ZikrCountScreen(
+    navigateToEditAddScreenToAddNotSavedZikr: (Int,Int) -> Unit,
     modifier: Modifier = Modifier,
     onNavigateList: () -> Unit,
     zikrControlModel: DataBaseViewModel = viewModel(),
@@ -59,8 +61,19 @@ fun ZikrCountScreen(
 
 
     var zikrFlow by remember { mutableStateOf<Flow<Zikr?>?>(null) }
-    LaunchedEffect(uiState.lastZikrId) {
-        zikrFlow = zikrControlModel.getZikrById(uiState.lastZikrId)
+
+    LaunchedEffect(uiState.isLoadingforNew,uiState.lastZikrId) {
+        zikrControlModel.updateStateInGeneral()
+        if(!uiState.isLoadingforNew){
+            zikrFlow = zikrControlModel.getZikrById(uiState.lastZikrId)
+            zikrControlModel.loadZikrBounds(uiState.countCurrent,uiState.countTotal)
+        }
+        else{
+            val notsaveCount = zikrControlModel.getNotSaveLastCount().first() ?: 0
+            zikrControlModel.loadZikrBounds(notsaveCount,uiState.countTotal)
+        }
+
+
     }
 
 
@@ -78,11 +91,7 @@ fun ZikrCountScreen(
         zikrEnd = zikr?.zikrCountEnd ?: 0
         zikrDescription = zikr?.zikrDescription ?: ""
 
-
-            zikrControlModel.loadZikrBounds(zikrStart, zikrEnd)
-
-
-
+        zikrControlModel.loadZikrBounds(zikrStart,zikrEnd)
     }
 
     Box(
@@ -100,7 +109,8 @@ fun ZikrCountScreen(
                 .padding(top = 80.dp, start = 30.dp, end = 30.dp),
         ) {
 
-            TopAppBar(modifier = modifier.fillMaxWidth())
+            TopAppBar(modifier = modifier.fillMaxWidth(),
+                { navigateToEditAddScreenToAddNotSavedZikr (uiState.lastZikrId,uiState.countCurrent) })
             ZikrName(modifier = modifier.fillMaxWidth(), zikrName)
             ZikrNote(
                 modifier = modifier
@@ -137,32 +147,21 @@ fun ZikrCountScreen(
             )
 
 
-//            LaunchedEffect(uiState.countCurrent) {
-//                if (uiState.lastZikrId == 0) {
-//                    while (true) {
-//                        delay(10000)
-//                        Toast
-//                            .makeText(context, "No Zikr Found. Kindly select one from the list.", Toast.LENGTH_SHORT)
-//                            .show()
-//                    }
-//                }
-//            }
 
-                        if (uiState.lastZikrId != 0) {
+            if (uiState.isLoadingforNew) {
                 // Data is ready
                 CustomComponent(
                     indicatorValue = uiState.countCurrent,
-                    maxIndicatorValue = if(uiState.countTotal==0) 1 else uiState.countTotal,
+                    maxIndicatorValue = 1000,
                     foregroundIndicatorColor = brush2,
                     backgroundIndicatorColor = brush,
                     colorForCountbtn = IconBgTeal
                 )
             } else{
                 // Load
-
-                            CustomComponent(
-                                indicatorValue = uiState.countCurrent,
-                                maxIndicatorValue = if(uiState.countTotal==0) 1000 else uiState.countTotal,
+                CustomComponent(
+                                indicatorValue = if(uiState.countCurrent == null)1 else uiState.countCurrent,
+                                maxIndicatorValue = if(uiState.countTotal==null)1 else uiState.countTotal ,
                                 foregroundIndicatorColor = brush2,
                                 backgroundIndicatorColor = brush,
                                 colorForCountbtn = IconBgTeal
@@ -170,63 +169,6 @@ fun ZikrCountScreen(
 
 
             }
-
-
-
-//            LaunchedEffect(uiState.countCurrent) {
-//                if (uiState.countTotal > 0) {
-//                    try {
-//                        withTimeout(7000) {
-//                            // Wait until countCurrent becomes >= 0
-//                            while (uiState.countCurrent < 0) {
-//                                delay(100) // small polling delay
-//                            }
-//                        }
-//                    } catch (e: TimeoutCancellationException) {
-//                        // Timeout happened, still show loading or handle timeout
-//                        Toast.makeText(context, "No Zikr Found Kindly Select one from the List", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//
-//            if (uiState.countTotal > 0) {
-//                // Data is ready
-//                CustomComponent(
-//                    indicatorValue = uiState.countCurrent,
-//                    maxIndicatorValue = uiState.countTotal,
-//                    foregroundIndicatorColor = brush2,
-//                    backgroundIndicatorColor = brush,
-//                    colorForCountbtn = IconBgTeal
-//                )
-//            } else{
-//                // Loading UI
-//
-//                    Text(text = "Loading...", textAlign = TextAlign.Center,
-//                        modifier = modifier.fillMaxWidth())
-//
-//            }
-
-//            if (uiState.countTotal > 0) {
-//                // Data is ready, safe to run your CustomComponent
-//                CustomComponent(
-//                    indicatorValue = uiState.countCurrent,
-//                    maxIndicatorValue = uiState.countTotal,
-//                    foregroundIndicatorColor = brush2,
-//                    backgroundIndicatorColor = brush,
-//                    colorForCountbtn = IconBgTeal,
-//                )
-//            } else {
-//                // Show placeholder or loading UI here while waiting for data
-//                // For example:
-//                withTimeout(7000){
-//                    Box(
-//                        modifier = Modifier.fillMaxSize(),
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        Text(text = "Loading...", textAlign = TextAlign.Center)
-//                    }
-//                }
-//            }
 
 
             //MainCounterCircle(incrementCount = { zikrControlModel.incrementCount(); })
@@ -249,11 +191,12 @@ fun ZikrCountScreen(
                         zikrControlModel.restartZikrAfterCompletion() // This already hides the dialog via the restart logic in ViewModel
                     },
                     dialogTitle = "Zikr Completed",
-                    dialogText = "Restart or Cancel the Current Zikr!",
+                    dialogText = "Do Want To Restart!",
                     icon = painterResource(id = R.drawable.complete2),
 
                     iconDescription = "Reset Icon",
-                    confirmButtonText = "Restart"
+                    confirmButtonText = "Restart",
+                    dismissButtonText = "No"
                 )
             }
 
@@ -272,7 +215,8 @@ fun ZikrCountScreen(
 
                     icon = painterResource(id = R.drawable.reset),
                     iconDescription = "Reset Icon",
-                    confirmButtonText = "Reset"
+                    confirmButtonText = "Yes",
+                    dismissButtonText = "No"
                 )
             }
 

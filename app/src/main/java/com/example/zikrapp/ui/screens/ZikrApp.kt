@@ -30,7 +30,7 @@ sealed interface ZikrRoute {
     @Serializable
     object ZikrList : ZikrRoute
     @Serializable
-    data class ZikrEditAdd(val zikrId: Int) : ZikrRoute
+    data class ZikrEditAdd(val zikrId: Int,val notSaveCount:Int?) : ZikrRoute
 }
 
 @Composable
@@ -79,13 +79,17 @@ fun ZikrApp(
                             onNavigateList = { navigate(ZikrRoute.ZikrList) },
                             modifier = Modifier,
                             zikrControlModel = zikrControlModel,
+                            navigateToEditAddScreenToAddNotSavedZikr = {zikrId, count ->
+                                navigate(ZikrRoute.ZikrEditAdd(zikrId,count))
+                            }
                         )
                     }
                     ZikrRoute.ZikrList -> NavEntry(route) {
                         ZikrListScreen(
-                            onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(0)) },
-                            onEditZikr = { id -> navigate(ZikrRoute.ZikrEditAdd(id)) },
-                            navigatToCountsreen = { navigate(ZikrRoute.ZikrCount(uiState.lastZikrId))}
+                            onAddZikr = { navigate(ZikrRoute.ZikrEditAdd(0,null)) },
+                            onEditZikr = { id -> navigate(ZikrRoute.ZikrEditAdd(id,null)) },
+                            navigatToCountsreen = { navigate(ZikrRoute.ZikrCount(uiState.lastZikrId))},
+                            wantToSaveNotSavedZikr = {navigate(ZikrRoute.ZikrEditAdd(uiState.lastZikrId,uiState.countCurrent))}
 
 
                         )
@@ -93,6 +97,7 @@ fun ZikrApp(
                     is ZikrRoute.ZikrEditAdd -> NavEntry(route) {
                         ZikrEditAddScreen(
                             zikrId = route.zikrId,
+                            notSaveCount = route.notSaveCount,
                             onDone = { navigate(ZikrRoute.ZikrList) },
                             onCancel = { navigate(ZikrRoute.ZikrList) }
                         )

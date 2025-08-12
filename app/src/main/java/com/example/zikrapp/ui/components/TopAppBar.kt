@@ -1,22 +1,18 @@
 package com.example.zikrapp.ui.components
 
-import android.R.attr.shape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.internal.isLiveLiteralsEnabled
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +27,8 @@ import com.example.zikrapp.ui.viewmodel.DataBaseViewModel
 
 
 @Composable
-fun TopAppBar(modifier: Modifier = Modifier, zikrControlModel: DataBaseViewModel = viewModel()) {
+fun TopAppBar(modifier: Modifier = Modifier,
+              navigateToEditAddScreenToAddNotSavedZikr: () -> Unit,zikrControlModel: DataBaseViewModel = viewModel()) {
 
     val uiState by zikrControlModel.uiState.collectAsState()
     Row(
@@ -45,7 +42,7 @@ fun TopAppBar(modifier: Modifier = Modifier, zikrControlModel: DataBaseViewModel
             onClick = { zikrControlModel.startThemLogic() })
         Text("Tasbeeh Counter", color = Color.White, fontSize = 24.sp)
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { navigateToEditAddScreenToAddNotSavedZikr() },
                 enabled = uiState.saveIconEnabled,
                 modifier = Modifier
                     .size(50.dp).graphicsLayer{
