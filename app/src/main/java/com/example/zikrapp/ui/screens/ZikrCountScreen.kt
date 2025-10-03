@@ -160,8 +160,8 @@ fun ZikrCountScreen(
             } else{
                 // Load
                 CustomComponent(
-                                indicatorValue = if(uiState.countCurrent == null)1 else uiState.countCurrent,
-                                maxIndicatorValue = if(uiState.countTotal==null)1 else uiState.countTotal ,
+                                indicatorValue = uiState.countCurrent,
+                                maxIndicatorValue = uiState.countTotal,
                                 foregroundIndicatorColor = brush2,
                                 backgroundIndicatorColor = brush,
                                 colorForCountbtn = IconBgTeal
